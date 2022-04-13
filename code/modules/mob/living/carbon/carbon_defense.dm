@@ -84,11 +84,11 @@
 	if(!affecting) //missing limb? we select the first bodypart (you can never have zero, because of chest)
 		affecting = bodyparts[1]
 	SEND_SIGNAL(I, COMSIG_ITEM_ATTACK_ZONE, src, user, affecting)
-	send_item_attack_message(I, user, affecting.name, affecting)
+	send_item_attack_message(I, user, parse_zone(affecting.body_zone), affecting)
 	if(I.force)
 		var/attack_direction = get_dir(user, src)
 		apply_damage(I.force, I.damtype, affecting, wound_bonus = I.wound_bonus, bare_wound_bonus = I.bare_wound_bonus, sharpness = I.get_sharpness(), attack_direction = attack_direction)
-		if(I.damtype == BRUTE && affecting.status == BODYPART_ORGANIC)
+		if(I.damtype == BRUTE && IS_ORGANIC_LIMB(affecting))
 			if(prob(33))
 				I.add_mob_blood(src)
 				var/turf/location = get_turf(src)
@@ -114,7 +114,7 @@
 	var/message_verb_continuous = length(I.attack_verb_continuous) ? "[pick(I.attack_verb_continuous)]" : "attacks"
 	var/message_verb_simple = length(I.attack_verb_simple) ? "[pick(I.attack_verb_simple)]" : "attack"
 	//SKYRAT EDIT ADDITION BEGIN
-	if(I.force && !user.combat_mode)
+	if(I.force && !user.combat_mode && !length(I.attack_verb_simple) && !length(I.attack_verb_continuous))
 		var/random = rand(1,2)
 		switch(random)
 			if(1)
@@ -502,7 +502,6 @@
 			if(HAS_TRAIT(src, TRAIT_BADTOUCH))
 				to_chat(M, span_warning("[src] looks visibly upset as you pat [p_them()] on the head."))
 
-	/* SKYRAT EDIT START - Not even going to start with this one
 	else if ((M.zone_selected == BODY_ZONE_PRECISE_GROIN) && !isnull(src.getorgan(/obj/item/organ/tail)))
 		SEND_SIGNAL(src, COMSIG_CARBON_TAILPULL, M)
 		M.visible_message(span_notice("[M] pulls on [src]'s tail!"), \
@@ -513,7 +512,6 @@
 			to_chat(M, span_warning("[src] makes a grumbling noise as you pull on [p_their()] tail."))
 		else
 			SEND_SIGNAL(src, COMSIG_ADD_MOOD_EVENT, "tailpulled", /datum/mood_event/tailpulled)
-	*/ // SKYRAT EDIT END
 	else
 		SEND_SIGNAL(src, COMSIG_CARBON_HUGGED, M)
 		SEND_SIGNAL(M, COMSIG_CARBON_HUG, M, src)
@@ -723,7 +721,7 @@
 	. = health
 	for (var/_limb in bodyparts)
 		var/obj/item/bodypart/limb = _limb
-		if (limb.status != BODYPART_ORGANIC)
+		if (!IS_ORGANIC_LIMB(limb))
 			. += (limb.brute_dam * limb.body_damage_coeff) + (limb.burn_dam * limb.body_damage_coeff)
 
 /mob/living/carbon/grabbedby(mob/living/carbon/user, supress_message = FALSE)
