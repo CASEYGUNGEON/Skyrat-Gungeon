@@ -33,8 +33,8 @@
 		/obj/item/watertank/pepperspray = 2
 	)
 	refill_canister = /obj/item/vending_refill/security_peacekeeper
-	default_price = PAYCHECK_MEDIUM
-	extra_price = PAYCHECK_HARD * 1.5
+	default_price = PAYCHECK_CREW
+	extra_price = PAYCHECK_COMMAND * 1.5
 	payment_department = ACCOUNT_SEC
 
 /obj/machinery/vending/security/pre_throw(obj/item/I)
@@ -104,7 +104,7 @@
 					/obj/item/clothing/shoes/jackboots = 3,
 					/obj/item/clothing/head/beret/sec = 3,
 					/obj/item/clothing/head/soft/sec = 3,
-					/obj/item/clothing/mask/bandana/color/red = 3,
+					/obj/item/clothing/mask/bandana/red = 3,
 					/obj/item/clothing/gloves/color/black = 3,
 					/obj/item/clothing/under/rank/security/officer/skirt = 3,
 					/obj/item/clothing/under/utility/sec/old = 3,
