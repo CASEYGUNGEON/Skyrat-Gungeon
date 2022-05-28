@@ -1,3 +1,4 @@
+/* SKYRAT EDIT REMOVAL - Custom HTML Lobby Screen
 /datum/hud/new_player
 
 /datum/hud/new_player/New(mob/owner)
@@ -138,7 +139,7 @@
 	var/mob/dead/new_player/new_player = hud.mymob
 
 	// SKYRAT EDIT BEGIN
-	if(length_char(new_player.client?.prefs?.read_preference(/datum/preference/text/flavor_text)) < FLAVOR_TEXT_CHAR_REQUIREMENT)
+	if(!is_admin(new_player.client) && length_char(new_player.client?.prefs?.read_preference(/datum/preference/text/flavor_text)) < FLAVOR_TEXT_CHAR_REQUIREMENT)
 		to_chat(new_player, span_notice("You need at least [FLAVOR_TEXT_CHAR_REQUIREMENT] characters of flavor text to ready up for the round. You have [length_char(new_player.client.prefs.read_preference(/datum/preference/text/flavor_text))] characters."))
 		return
 	// SKYRAT EDIT END
@@ -353,3 +354,4 @@
 		return
 	var/mob/dead/new_player/new_player = hud.mymob
 	new_player.handle_player_polling()
+*/ // SKYRAT EDIT END

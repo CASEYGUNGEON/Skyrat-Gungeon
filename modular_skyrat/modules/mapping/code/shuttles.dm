@@ -118,7 +118,7 @@
 	implants = list(/obj/item/implant/weapons_auth)
 	belt = /obj/item/storage/belt/military
 	r_pocket = /obj/item/storage/bag/ammo
-	l_pocket = /obj/item/gun/energy/disabler/cfa_disabler
+	l_pocket = /obj/item/gun/energy/disabler/bolt_disabler
 	id = /obj/item/card/id/advanced/chameleon
 	id_trim = /datum/id_trim/chameleon/operative
 	skillchips = list(/obj/item/skillchip/job/engineer)
@@ -148,7 +148,7 @@
 	implants = list(/obj/item/implant/weapons_auth)
 	belt = /obj/item/storage/belt/military
 	r_pocket = /obj/item/storage/bag/ammo
-	l_pocket = /obj/item/gun/energy/disabler/cfa_disabler
+	l_pocket = /obj/item/gun/energy/disabler/bolt_disabler
 	id = /obj/item/card/id/advanced/chameleon
 	id_trim = /datum/id_trim/chameleon/operative
 	skillchips = list(/obj/item/skillchip/job/engineer)
@@ -186,6 +186,6 @@
 	view_range = 0
 
 /obj/item/circuitboard/computer/tarkon_driver
-	name = "Chevvy Control Console (Computer Board)"
+	name = "Tarkon Driver Control Console (Computer Board)"
 	build_path = /obj/machinery/computer/shuttle/tarkon_driver
 /*----- End of Tarkon Shuttle Code -----*/

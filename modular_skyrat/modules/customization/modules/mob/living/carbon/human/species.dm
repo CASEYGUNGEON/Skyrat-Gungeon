@@ -2,10 +2,9 @@ GLOBAL_LIST_EMPTY(customizable_races)
 
 /datum/species
 	mutant_bodyparts = list()
+	digitigrade_customization = DIGITIGRADE_OPTIONAL // Doing this so that the legs preference actually works for everyone.
 	///Self explanatory
 	var/can_have_genitals = TRUE
-	///Override of icon file of which we're taking the icons from for our limbs
-	var/limbs_icon
 	///A list of actual body markings on the owner of the species. Associative lists with keys named by limbs defines, pointing to a list with names and colors for the marking to be rendered. This is also stored in the DNA
 	var/list/list/body_markings = list()
 	///Override of the eyes icon file, used for Vox and maybe more in the future - The future is now, with Teshari using it too
@@ -24,8 +23,8 @@ GLOBAL_LIST_EMPTY(customizable_races)
 	var/veteran_only = FALSE
 	///Flavor text of the species displayed on character creation screeen
 	var/flavor_text = "No description."
-	///Does this species have a special set of overlay clothing, and if so, what is the name of the folder under .../clothing/species that contains them?
-	var/species_clothing_path
+	///Path to BODYTYPE_CUSTOM species worn icons. An assoc list of ITEM_SLOT_X => /icon
+	var/list/custom_worn_icons = list()
 	///Is this species restricted from changing their body_size in character creation?
 	var/body_size_restricted = FALSE
 
@@ -33,30 +32,6 @@ GLOBAL_LIST_EMPTY(customizable_races)
 	var/list/standing	= list()
 
 	var/obj/item/bodypart/head/HD = H.get_bodypart(BODY_ZONE_HEAD)
-
-	//Digitigrade legs are stuck in the phantom zone between true limbs and mutant bodyparts. Mainly it just needs more agressive updating than most limbs.
-	var/update_needed = FALSE
-	var/not_digitigrade = TRUE
-	for(var/X in H.bodyparts)
-		var/obj/item/bodypart/O = X
-		if(!O.use_digitigrade)
-			continue
-		not_digitigrade = FALSE
-		if(!(DIGITIGRADE in species_traits)) //Someone cut off a digitigrade leg and tacked it on
-			species_traits += DIGITIGRADE
-		var/should_be_squished = FALSE
-		if((H.wear_suit && H.wear_suit.flags_inv & HIDEJUMPSUIT && !(H.wear_suit.mutant_variants & STYLE_DIGITIGRADE) && (H.wear_suit.body_parts_covered & LEGS)) || (H.w_uniform && (H.w_uniform.body_parts_covered & LEGS) && !(H.w_uniform.mutant_variants & STYLE_DIGITIGRADE)))
-			should_be_squished = TRUE
-		if(O.use_digitigrade == FULL_DIGITIGRADE && should_be_squished)
-			O.use_digitigrade = SQUISHED_DIGITIGRADE
-			update_needed = TRUE
-		else if(O.use_digitigrade == SQUISHED_DIGITIGRADE && !should_be_squished)
-			O.use_digitigrade = FULL_DIGITIGRADE
-			update_needed = TRUE
-	if(update_needed)
-		H.update_body_parts()
-	if(not_digitigrade && (DIGITIGRADE in species_traits)) //Curse is lifted
-		species_traits -= DIGITIGRADE
 
 	if(!mutant_bodyparts)
 		H.remove_overlay(BODY_BEHIND_LAYER)
@@ -93,7 +68,7 @@ GLOBAL_LIST_EMPTY(customizable_races)
 	H.remove_overlay(BODY_FRONT_LAYER)
 	H.remove_overlay(BODY_FRONT_UNDER_CLOTHES)
 
-	var/g = (H.body_type == FEMALE) ? "f" : "m"
+	var/g = (H.physique == FEMALE) ? "f" : "m"
 	for(var/bodypart in bodyparts_to_add)
 		var/datum/sprite_accessory/S = bodypart
 		var/key = S.key
@@ -180,7 +155,7 @@ GLOBAL_LIST_EMPTY(customizable_races)
 						if(FACEHAIR)
 							accessory_overlay.color = H.facial_hair_color
 						if(EYECOLOR)
-							accessory_overlay.color = H.eye_color
+							accessory_overlay.color = H.eye_color_left
 			else
 				accessory_overlay.color = override_color
 			if (accessories)
@@ -235,7 +210,7 @@ GLOBAL_LIST_EMPTY(customizable_races)
 					if(FACEHAIR)
 						extra_accessory_overlay.color = H.facial_hair_color
 					if(EYECOLOR)
-						extra_accessory_overlay.color = H.eye_color
+						extra_accessory_overlay.color = H.eye_color_left
 
 				standing += extra_accessory_overlay
 
@@ -314,9 +289,6 @@ GLOBAL_LIST_EMPTY(customizable_races)
 /datum/species/vampire
 	mutant_bodyparts = list()
 
-/datum/species/hemophage
-	mutant_bodyparts = list()
-
 /datum/species/plasmaman
 	mutant_bodyparts = list()
 	can_have_genitals = FALSE
@@ -363,100 +335,6 @@ GLOBAL_LIST_EMPTY(customizable_races)
 /datum/species/proc/get_random_body_markings(list/features) //Needs features to base the colour off of
 	return list()
 
-/datum/species/proc/on_species_gain(mob/living/carbon/C, datum/species/old_species)
-	// Drop the items the new species can't wear
-	if((AGENDER in species_traits))
-		C.gender = PLURAL
-	for(var/slot_id in no_equip)
-		var/obj/item/thing = C.get_item_by_slot(slot_id)
-		if(thing && (!thing.species_exception || !is_type_in_list(src,thing.species_exception)))
-			C.dropItemToGround(thing)
-
-	if(C.hud_used)
-		C.hud_used.update_locked_slots()
-
-	fix_non_native_limbs(C)
-
-	// this needs to be FIRST because qdel calls update_body which checks if we have DIGITIGRADE legs or not and if not then removes DIGITIGRADE from species_traits
-	if(C.dna.species.mutant_bodyparts["legs"] && C.dna.species.mutant_bodyparts["legs"][MUTANT_INDEX_NAME] == "Digitigrade Legs")
-		species_traits += DIGITIGRADE
-	if(DIGITIGRADE in species_traits)
-		C.Digitigrade_Leg_Swap(FALSE)
-
-	C.mob_biotypes = inherent_biotypes
-
-	regenerate_organs(C,old_species)
-
-	if(exotic_bloodtype && C.dna.blood_type != exotic_bloodtype)
-		C.dna.blood_type = exotic_bloodtype
-
-	if(old_species.mutanthands)
-		for(var/obj/item/I in C.held_items)
-			if(istype(I, old_species.mutanthands))
-				qdel(I)
-
-	if(mutanthands)
-		// Drop items in hands
-		// If you're lucky enough to have a TRAIT_NODROP item, then it stays.
-		for(var/V in C.held_items)
-			var/obj/item/I = V
-			if(istype(I))
-				C.dropItemToGround(I)
-			else	//Entries in the list should only ever be items or null, so if it's not an item, we can assume it's an empty hand
-				INVOKE_ASYNC(C, /mob/living/carbon.proc/put_in_hands, new mutanthands())
-
-	if(ishuman(C))
-		var/mob/living/carbon/human/human = C
-		for(var/obj/item/organ/external/organ_path as anything in external_organs)
-			//Load a persons preferences from DNA
-			var/feature_key_name = human.dna.features[initial(organ_path.feature_key)]
-
-			var/obj/item/organ/external/new_organ = SSwardrobe.provide_type(organ_path)
-			new_organ.set_sprite(feature_key_name)
-			new_organ.Insert(human)
-
-	for(var/X in inherent_traits)
-		ADD_TRAIT(C, X, SPECIES_TRAIT)
-
-	if(TRAIT_VIRUSIMMUNE in inherent_traits)
-		for(var/datum/disease/A in C.diseases)
-			A.cure(FALSE)
-
-	if(TRAIT_TOXIMMUNE in inherent_traits)
-		C.setToxLoss(0, TRUE, TRUE)
-
-	if(TRAIT_OXYIMMUNE in inherent_traits)
-		C.setOxyLoss(0, TRUE, TRUE)
-
-	if(TRAIT_NOMETABOLISM in inherent_traits)
-		C.reagents.end_metabolization(C, keep_liverless = TRUE)
-
-	if(TRAIT_GENELESS in inherent_traits)
-		C.dna.remove_all_mutations() // Radiation immune mobs can't get mutations normally
-
-	if(inherent_factions)
-		for(var/i in inherent_factions)
-			C.faction += i //Using +=/-= for this in case you also gain the faction from a different source.
-
-	if(flying_species && isnull(fly))
-		fly = new
-		fly.Grant(C)
-
-	var/robotic_limbs
-	if(ROBOTIC_LIMBS in species_traits)
-		robotic_limbs = TRUE
-	for(var/obj/item/bodypart/B in C.bodyparts)
-		B.alpha = specific_alpha
-		if(robotic_limbs)
-			B.change_bodypart_status(BODYPART_ROBOTIC, FALSE, TRUE)
-			B.organic_render = TRUE
-		else if (B.status == BODYPART_ORGANIC)
-			B.organic_render = TRUE
-
-	C.add_or_update_variable_movespeed_modifier(/datum/movespeed_modifier/species, multiplicative_slowdown=speedmod)
-
-	SEND_SIGNAL(C, COMSIG_SPECIES_GAIN, src, old_species)
-
 /datum/species/proc/handle_body(mob/living/carbon/human/species_human)
 	species_human.remove_overlay(BODY_LAYER)
 
@@ -476,27 +354,34 @@ GLOBAL_LIST_EMPTY(customizable_races)
 
 		// eyes
 		if(!(NOEYESPRITES in species_traits))
-			var/obj/item/organ/eyes/E = species_human.getorganslot(ORGAN_SLOT_EYES)
-			var/mutable_appearance/eye_overlay
-			var/mutable_appearance/eye_emissive
-			var/eye_icon = eyes_icon || 'icons/mob/human_face.dmi'
-			if(!E)
-				eye_overlay = mutable_appearance(eye_icon, "eyes_missing", -BODY_LAYER)
-			else
-				eye_overlay = mutable_appearance(eye_icon, E.eye_icon_state, -BODY_LAYER)
-				if (E.is_emissive)
-					eye_emissive = emissive_appearance_copy(eye_overlay)
-			if((EYECOLOR in species_traits) && E)
-				eye_overlay.color = species_human.eye_color
+			var/obj/item/organ/eyes/eye_organ = species_human.getorganslot(ORGAN_SLOT_EYES)
+			var/mutable_appearance/no_eyeslay
+
+			var/add_pixel_x = 0
+			var/add_pixel_y = 0
+			//cut any possible vis overlays
+			if(length(body_vis_overlays))
+				SSvis_overlays.remove_vis_overlay(species_human, body_vis_overlays)
+
 			if(OFFSET_FACE in species_human.dna.species.offset_features)
-				eye_overlay.pixel_x += species_human.dna.species.offset_features[OFFSET_FACE][1]
-				eye_overlay.pixel_y += species_human.dna.species.offset_features[OFFSET_FACE][2]
-				if (eye_emissive)
-					eye_emissive.pixel_x += species_human.dna.species.offset_features[OFFSET_FACE][1]
-					eye_emissive.pixel_y += species_human.dna.species.offset_features[OFFSET_FACE][2]
-			standing += eye_overlay
-			if (eye_emissive)
-				standing += eye_emissive
+				add_pixel_x = species_human.dna.species.offset_features[OFFSET_FACE][1]
+				add_pixel_y = species_human.dna.species.offset_features[OFFSET_FACE][2]
+
+			if(!eye_organ)
+				no_eyeslay = mutable_appearance('icons/mob/human_face.dmi', "eyes_missing", -BODY_LAYER)
+				no_eyeslay.pixel_x += add_pixel_x
+				no_eyeslay.pixel_y += add_pixel_y
+				standing += no_eyeslay
+
+			if(!no_eyeslay)
+				for(var/eye_overlay in eye_organ.generate_body_overlay(species_human))
+					standing += eye_overlay
+					if(eye_organ.is_emissive)
+						var/mutable_appearance/eye_emissive = emissive_appearance_copy(eye_overlay)
+						eye_emissive.pixel_x += species_human.dna.species.offset_features[OFFSET_FACE][1]
+						eye_emissive.pixel_y += species_human.dna.species.offset_features[OFFSET_FACE][2]
+						standing += eye_emissive
+
 
 	//Underwear, Undershirts & Socks
 	if(!(NO_UNDERWEAR in species_traits))
@@ -505,7 +390,7 @@ GLOBAL_LIST_EMPTY(customizable_races)
 			var/mutable_appearance/underwear_overlay
 			if(underwear)
 				var/icon_state = underwear.icon_state
-				if(underwear.has_digitigrade && (DIGITIGRADE in species_traits))
+				if(underwear.has_digitigrade && (bodytype & BODYTYPE_DIGITIGRADE))
 					icon_state += "_d"
 				underwear_overlay = mutable_appearance(underwear.icon, icon_state, -BODY_LAYER)
 				if(!underwear.use_static)
@@ -529,7 +414,7 @@ GLOBAL_LIST_EMPTY(customizable_races)
 			if(socks)
 				var/mutable_appearance/socks_overlay
 				var/icon_state = socks.icon_state
-				if(DIGITIGRADE in species_traits)
+				if((bodytype & BODYTYPE_DIGITIGRADE))
 					icon_state += "_d"
 				socks_overlay = mutable_appearance(socks.icon, icon_state, -BODY_LAYER)
 				if(!socks.use_static)
@@ -552,9 +437,9 @@ GLOBAL_LIST_EMPTY(customizable_races)
 		stop_wagging_tail(H)
 	. = ..()
 
-////////////////
-//Tail Wagging//
-////////////////
+/*
+*	TAIL WAGGING
+*/
 
 /datum/species/proc/can_wag_tail(mob/living/carbon/human/H)
 	if(!H) //Somewhere in the core code we're getting those procs with H being null
@@ -592,7 +477,7 @@ GLOBAL_LIST_EMPTY(customizable_races)
 	T.wagging = FALSE
 	H.update_body()
 
-/datum/species/regenerate_organs(mob/living/carbon/C,datum/species/old_species,replace_current=TRUE,list/excluded_zones)
+/datum/species/regenerate_organs(mob/living/carbon/C, datum/species/old_species, replace_current = TRUE, list/excluded_zones, visual_only = FALSE)
 	. = ..()
 	var/robot_organs = (ROBOTIC_DNA_ORGANS in C.dna.species.species_traits)
 	for(var/key in C.dna.mutant_bodyparts)
@@ -601,6 +486,7 @@ GLOBAL_LIST_EMPTY(customizable_races)
 		var/datum/sprite_accessory/SA = GLOB.sprite_accessories[key][C.dna.mutant_bodyparts[key][MUTANT_INDEX_NAME]]
 		if(SA?.factual && SA.organ_type)
 			var/obj/item/organ/path = new SA.organ_type
+			path.sprite_accessory_flags = SA.flags_for_organ
 			if(robot_organs)
 				path.status = ORGAN_ROBOTIC
 				path.organ_flags |= ORGAN_SYNTHETIC
@@ -611,11 +497,6 @@ GLOBAL_LIST_EMPTY(customizable_races)
 			path.build_from_dna(C.dna, key)
 			path.Insert(C, 0, FALSE)
 
-/datum/species/on_species_loss(mob/living/carbon/C, datum/species/old_species, pref_load)
-	. = ..()
-	if(ROBOTIC_LIMBS in species_traits)
-		for(var/obj/item/bodypart/B in C.bodyparts)
-			B.change_bodypart_status(BODYPART_ORGANIC, FALSE, TRUE)
 
 /datum/species/proc/spec_revival(mob/living/carbon/human/H)
 	return

@@ -282,7 +282,7 @@
 		if(ranged) //We ranged? Shoot at em
 			if(!target.Adjacent(target_from) && ranged_cooldown <= world.time) //But make sure they're not in range for a melee attack and our range attack is off cooldown
 				OpenFire(target)
-		if(!Process_Spacemove()) //Drifting
+		if(!Process_Spacemove(0)) //Drifting
 			SSmove_manager.stop_looping(src)
 			return 1
 		if(retreat_distance != null) //If we have a retreat distance, check if we need to run from our target
@@ -364,6 +364,7 @@
 	in_melee = FALSE
 	SSmove_manager.stop_looping(src)
 	LoseAggro()
+	SEND_SIGNAL(src, COMSIG_HOSTILE_MOB_LOST_TARGET) // SKYRAT EDIT ADDITION
 
 //////////////END HOSTILE MOB TARGETTING AND AGGRESSION////////////
 

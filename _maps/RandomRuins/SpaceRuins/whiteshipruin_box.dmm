@@ -66,16 +66,17 @@
 /obj/item/tank/internals/oxygen,
 /turf/open/floor/mineral/titanium/white,
 /area/ruin/space/has_grav/whiteship/box)
-"kn" = (
-/obj/item/stock_parts/cell/high,
-/turf/open/floor/mineral/titanium/white,
-/area/ruin/space/has_grav/whiteship/box)
 "kK" = (
 /turf/closed/wall/mineral/titanium,
 /area/ruin/space/has_grav/whiteship/box)
 "lR" = (
 /obj/machinery/light/small/built/directional/east,
 /turf/open/floor/mineral/titanium/white,
+/area/ruin/space/has_grav/whiteship/box)
+"mE" = (
+/obj/machinery/door/window/right/directional/north,
+/obj/effect/decal/remains/human,
+/turf/open/floor/mineral/titanium/purple,
 /area/ruin/space/has_grav/whiteship/box)
 "mR" = (
 /obj/machinery/portable_atmospherics/canister/oxygen,
@@ -154,7 +155,7 @@
 "zY" = (
 /obj/machinery/door/poddoor{
 	id = "oldship_ruin_gun";
-	name = "pod bay door"
+	name = "Pod Bay Door"
 	},
 /turf/open/floor/plating,
 /area/ruin/space/has_grav/whiteship/box)
@@ -170,8 +171,12 @@
 /turf/open/floor/mineral/titanium/white,
 /area/ruin/space/has_grav/whiteship/box)
 "BG" = (
-/obj/structure/bed,
-/obj/item/bedsheet,
+/obj/structure/bed{
+	dir = 4
+	},
+/obj/item/bedsheet{
+	dir = 4
+	},
 /obj/structure/window/reinforced{
 	dir = 1
 	},
@@ -185,6 +190,10 @@
 	dir = 8
 	},
 /turf/open/floor/plating/airless,
+/area/ruin/space/has_grav/whiteship/box)
+"Db" = (
+/obj/item/stock_parts/cell/high,
+/turf/open/floor/mineral/titanium/white,
 /area/ruin/space/has_grav/whiteship/box)
 "Gj" = (
 /obj/structure/table,
@@ -263,11 +272,6 @@
 	dir = 4
 	},
 /turf/open/floor/plating/airless,
-/area/ruin/space/has_grav/whiteship/box)
-"Wl" = (
-/obj/machinery/door/window/northright,
-/obj/effect/decal/remains/human,
-/turf/open/floor/mineral/titanium/purple,
 /area/ruin/space/has_grav/whiteship/box)
 "Xp" = (
 /obj/structure/shuttle/engine/propulsion/left{
@@ -752,7 +756,7 @@ nH
 kK
 kK
 az
-kn
+Db
 pv
 pv
 pv
@@ -851,7 +855,7 @@ qZ
 pv
 lR
 pv
-Wl
+mE
 kK
 pv
 pv
@@ -877,7 +881,7 @@ kK
 kK
 kK
 pv
-kn
+Db
 gO
 Ov
 pv

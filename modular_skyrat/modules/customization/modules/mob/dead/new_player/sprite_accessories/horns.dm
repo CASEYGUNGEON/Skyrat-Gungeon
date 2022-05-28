@@ -48,3 +48,31 @@
 /datum/sprite_accessory/horns/big/antlers
 	name = "Antlers"
 	icon_state = "antlers"
+
+/datum/sprite_accessory/horns/broken
+	name = "Broken"
+	icon_state = "broken"
+
+/datum/sprite_accessory/horns/broken_right
+	name = "Broken(right)"
+	icon_state = "rbroken"
+
+/datum/sprite_accessory/horns/broken_left
+	name = "Broken(left)"
+	icon_state = "lbroken"
+
+/datum/sprite_accessory/horns/dragon
+	name = "Dragon"
+	icon_state = "dragon"
+
+/datum/sprite_accessory/horns/lifted
+	name = "Lifted"
+	icon_state = "lifted"
+
+/datum/sprite_accessory/horns/curly
+	name = "Curly"
+	icon_state = "newcurly"
+
+/datum/sprite_accessory/horns/upwards
+	name = "Upwards"
+	icon_state = "upwardshorns"

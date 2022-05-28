@@ -4,9 +4,6 @@
 	name = "exosuit fabricator"
 	desc = "Nothing is being built."
 	density = TRUE
-	use_power = IDLE_POWER_USE
-	idle_power_usage = 20
-	active_power_usage = 5000
 	req_access = list(ACCESS_ROBOTICS)
 	circuit = /obj/item/circuitboard/machine/mechfab
 	processing_flags = START_PROCESSING_MANUALLY
@@ -82,6 +79,7 @@
 	return ..()
 
 /obj/machinery/mecha_part_fabricator/RefreshParts()
+	. = ..()
 	var/T = 0
 
 	//maximum stocking amount (default 300000, 600000 at T4)
@@ -190,6 +188,8 @@
 					category_override += "H.O.N.K"
 				if(mech_types & EXOSUIT_MODULE_PHAZON)
 					category_override += "Phazon"
+				if(mech_types & EXOSUIT_MODULE_SAVANNAH)
+					category_override += "Savannah-Ivanov"
 
 		else if(ispath(built_item, /obj/item/borg_restart_board))
 			sub_category += "All Cyborgs" //Otherwise the restart board shows in the "parts" category, which seems dumb
@@ -212,7 +212,7 @@
 		"cost" = cost,
 		"id" = D.id,
 		"subCategory" = sub_category,
-		"categoryOverride" = category_override,
+		"category_override" = category_override,
 		"searchMeta" = D.search_metadata
 	)
 

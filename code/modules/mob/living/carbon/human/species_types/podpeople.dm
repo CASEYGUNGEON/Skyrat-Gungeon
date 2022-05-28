@@ -1,9 +1,8 @@
 /datum/species/pod
 	// A mutation caused by a human being ressurected in a revival pod. These regain health in light, and begin to wither in darkness.
-	name = "Podperson"
+	name = "\improper Podperson"
 	plural_form = "Podpeople"
 	id = SPECIES_PODPERSON
-	default_color = "59CE00"
 	species_traits = list(MUTCOLORS, EYECOLOR, HAS_FLESH, HAS_BONE)
 	inherent_traits = list(
 		TRAIT_ADVANCEDTOOLUSER,
@@ -24,10 +23,21 @@
 	payday_modifier = 0.75
 	meat = /obj/item/food/meat/slab/human/mutant/plant
 	exotic_blood = /datum/reagent/water
-	disliked_food = MEAT | DAIRY | SEAFOOD
+	disliked_food = MEAT | DAIRY | SEAFOOD | BUGS
 	liked_food = VEGETABLES | FRUIT | GRAIN
 	changesource_flags = MIRROR_BADMIN | WABBAJACK | MIRROR_MAGIC | MIRROR_PRIDE | RACE_SWAP | ERT_SPAWN | SLIME_EXTRACT
 	species_language_holder = /datum/language_holder/plant
+
+	bodypart_overrides = list(
+		BODY_ZONE_L_ARM = /obj/item/bodypart/l_arm/pod,
+		BODY_ZONE_R_ARM = /obj/item/bodypart/r_arm/pod,
+		BODY_ZONE_HEAD = /obj/item/bodypart/head/pod,
+		BODY_ZONE_L_LEG = /obj/item/bodypart/l_leg/pod,
+		BODY_ZONE_R_LEG = /obj/item/bodypart/r_leg/pod,
+		BODY_ZONE_CHEST = /obj/item/bodypart/chest/pod,
+	)
+
+	ass_image = 'icons/ass/asspodperson.png'
 
 /datum/species/pod/spec_life(mob/living/carbon/human/H, delta_time, times_fired)
 	if(H.stat == DEAD)
@@ -41,7 +51,7 @@
 		if(H.nutrition > NUTRITION_LEVEL_ALMOST_FULL)
 			H.set_nutrition(NUTRITION_LEVEL_ALMOST_FULL)
 		if(light_amount > 0.2) //if there's enough light, heal
-			H.heal_overall_damage(0.5 * delta_time, 0.5 * delta_time, 0, BODYPART_ORGANIC)
+			H.heal_overall_damage(0.5 * delta_time, 0.5 * delta_time, 0, BODYTYPE_ORGANIC)
 			H.adjustToxLoss(-0.5 * delta_time)
 			H.adjustOxyLoss(-0.5 * delta_time)
 

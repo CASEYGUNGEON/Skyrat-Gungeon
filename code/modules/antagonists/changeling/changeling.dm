@@ -67,6 +67,11 @@
 	/// A reference to our cellular emporium action (which opens the UI for the datum).
 	var/datum/action/innate/cellular_emporium/emporium_action
 
+	/// UI displaying how many chems we have
+	var/atom/movable/screen/ling/chems/lingchemdisplay
+	/// UI displayng our currently active sting
+	var/atom/movable/screen/ling/sting/lingstingdisplay
+
 	/// The name of our "hive" that our ling came from. Flavor.
 	var/hive_name
 
@@ -77,6 +82,7 @@
 	var/static/list/slot2type = list(
 		"head" = /obj/item/clothing/head/changeling,
 		"wear_mask" = /obj/item/clothing/mask/changeling,
+		"wear_neck" = /obj/item/changeling, // SKYRAT EDIT
 		"back" = /obj/item/changeling,
 		"wear_suit" = /obj/item/clothing/suit/changeling,
 		"w_uniform" = /obj/item/clothing/under/changeling,
@@ -127,26 +133,56 @@
 	handle_clown_mutation(living_mob, "You have evolved beyond your clownish nature, allowing you to wield weapons without harming yourself.")
 	RegisterSignal(living_mob, COMSIG_MOB_LOGIN, .proc/on_login)
 	RegisterSignal(living_mob, COMSIG_LIVING_LIFE, .proc/on_life)
-	living_mob.hud_used?.lingchemdisplay.invisibility = 0
-	living_mob.hud_used?.lingchemdisplay.maptext = FORMAT_CHEM_CHARGES_TEXT(chem_charges)
+	RegisterSignal(living_mob, list(COMSIG_MOB_MIDDLECLICKON, COMSIG_MOB_ALTCLICKON), .proc/on_click_sting)
 
-	if(!iscarbon(mob_to_tweak))
-		return
+	if(living_mob.hud_used)
+		var/datum/hud/hud_used = living_mob.hud_used
 
-	var/mob/living/carbon/carbon_mob = mob_to_tweak
-	RegisterSignal(carbon_mob, list(COMSIG_MOB_MIDDLECLICKON, COMSIG_MOB_ALTCLICKON), .proc/on_click_sting)
+		lingchemdisplay = new /atom/movable/screen/ling/chems()
+		lingchemdisplay.hud = hud_used
+		hud_used.infodisplay += lingchemdisplay
+
+		lingstingdisplay = new /atom/movable/screen/ling/sting()
+		lingstingdisplay.hud = hud_used
+		hud_used.infodisplay += lingstingdisplay
+
+		hud_used.show_hud(hud_used.hud_version)
+	else
+		RegisterSignal(living_mob, COMSIG_MOB_HUD_CREATED, .proc/on_hud_created)
 
 	// Brains are optional for lings.
-	var/obj/item/organ/brain/our_ling_brain = carbon_mob.getorganslot(ORGAN_SLOT_BRAIN)
+	var/obj/item/organ/brain/our_ling_brain = living_mob.getorganslot(ORGAN_SLOT_BRAIN)
 	if(our_ling_brain)
 		our_ling_brain.organ_flags &= ~ORGAN_VITAL
 		our_ling_brain.decoy_override = TRUE
+
+/datum/antagonist/changeling/proc/on_hud_created(datum/source)
+	SIGNAL_HANDLER
+
+	var/datum/hud/ling_hud = owner.current.hud_used
+
+	lingchemdisplay = new
+	lingchemdisplay.hud = ling_hud
+	ling_hud.infodisplay += lingchemdisplay
+
+	lingstingdisplay = new
+	lingstingdisplay.hud = ling_hud
+	ling_hud.infodisplay += lingstingdisplay
+
+	ling_hud.show_hud(ling_hud.hud_version)
 
 /datum/antagonist/changeling/remove_innate_effects(mob/living/mob_override)
 	var/mob/living/living_mob = mob_override || owner.current
 	handle_clown_mutation(living_mob, removing = FALSE)
 	UnregisterSignal(living_mob, list(COMSIG_MOB_LOGIN, COMSIG_LIVING_LIFE, COMSIG_MOB_MIDDLECLICKON, COMSIG_MOB_ALTCLICKON))
-	living_mob.hud_used?.lingchemdisplay.invisibility = INVISIBILITY_ABSTRACT
+
+	if(living_mob.hud_used)
+		var/datum/hud/hud_used = living_mob.hud_used
+
+		hud_used.infodisplay -= lingchemdisplay
+		hud_used.infodisplay -= lingstingdisplay
+		QDEL_NULL(lingchemdisplay)
+		QDEL_NULL(lingstingdisplay)
 
 /datum/antagonist/changeling/on_removal()
 	remove_changeling_powers(include_innate = TRUE)
@@ -205,9 +241,6 @@
 /datum/antagonist/changeling/proc/on_life(datum/source, delta_time, times_fired)
 	SIGNAL_HANDLER
 
-	if(!iscarbon(owner.current))
-		return
-
 	// If dead, we only regenerate up to half chem storage.
 	if(owner.current.stat == DEAD)
 		adjust_chemicals((chem_recharge_rate - chem_recharge_slowdown) * delta_time, total_chem_storage * 0.5)
@@ -220,7 +253,7 @@
  * Signal proc for [COMSIG_MOB_MIDDLECLICKON] and [COMSIG_MOB_ALTCLICKON].
  * Allows the changeling to sting people with a click.
  */
-/datum/antagonist/changeling/proc/on_click_sting(mob/living/carbon/ling, atom/clicked)
+/datum/antagonist/changeling/proc/on_click_sting(mob/living/ling, atom/clicked)
 	SIGNAL_HANDLER
 
 	if(!chosen_sting || clicked == ling || !istype(ling) || ling.stat != CONSCIOUS)
@@ -240,7 +273,7 @@
 	var/cap_to = isnum(override_cap) ? override_cap : total_chem_storage
 	chem_charges = clamp(chem_charges + amount, 0, cap_to)
 
-	owner.current.hud_used?.lingchemdisplay.maptext = FORMAT_CHEM_CHARGES_TEXT(chem_charges)
+	lingchemdisplay.maptext = FORMAT_CHEM_CHARGES_TEXT(chem_charges)
 
 /*
  * Remove changeling powers from the current Changeling's purchased_powers list.
@@ -431,7 +464,19 @@
 	new_profile.underwear = target.underwear
 	new_profile.undershirt = target.undershirt
 	new_profile.socks = target.socks
-
+	
+	// SKYRAT EDIT START
+	new_profile.underwear_color = target.underwear_color
+	new_profile.undershirt_color = target.undershirt_color
+	new_profile.socks_color = target.socks_color
+	new_profile.eye_color_left = target.eye_color_left
+	new_profile.eye_color_right = target.eye_color_right
+	new_profile.emissive_eyes = target.emissive_eyes
+	new_profile.grad_style = LAZYLISTDUPLICATE(target.grad_style)
+	new_profile.grad_color = LAZYLISTDUPLICATE(target.grad_color)
+	new_profile.physique = target.physique
+	//SKYRAT EDIT END
+	
 	// Grab skillchips they have
 	new_profile.skillchips = target.clone_skillchip_list(TRUE)
 
@@ -450,7 +495,7 @@
 	// Grab the target's sechut icon.
 	new_profile.id_icon = target.wear_id?.get_sechud_job_icon_state()
 
-	var/list/slots = list("head", "wear_mask", "back", "wear_suit", "w_uniform", "shoes", "belt", "gloves", "glasses", "ears", "wear_id", "s_store")
+	var/list/slots = list("head", "wear_mask", "wear_neck", "back", "wear_suit", "w_uniform", "shoes", "belt", "gloves", "glasses", "ears", "wear_id", "s_store") // SKYRAT EDIT
 	for(var/slot in slots)
 		if(!(slot in target.vars))
 			continue
@@ -466,6 +511,13 @@
 		new_profile.worn_icon_list[slot] = clothing_item.worn_icon
 		new_profile.worn_icon_state_list[slot] = clothing_item.worn_icon_state
 		new_profile.exists_list[slot] = 1
+		
+		// SKYRAT EDIT START
+		new_profile.worn_icon_digi_list[slot] = clothing_item.worn_icon_digi
+		new_profile.worn_icon_teshari_list[slot] = clothing_item.worn_icon_teshari
+		new_profile.worn_icon_vox_list[slot] = clothing_item.worn_icon_vox
+		new_profile.supports_variations_flags_list[slot] = clothing_item.supports_variations_flags
+		// SKYRAT EDIT END
 
 	return new_profile
 
@@ -633,7 +685,7 @@
 	var/static/list/slot2slot = list(
 		"head" = ITEM_SLOT_HEAD,
 		"wear_mask" = ITEM_SLOT_MASK,
-		"neck" = ITEM_SLOT_NECK,
+		"wear_neck" = ITEM_SLOT_NECK, // SKYRAT EDIT
 		"back" = ITEM_SLOT_BACK,
 		"wear_suit" = ITEM_SLOT_OCLOTHING,
 		"w_uniform" = ITEM_SLOT_ICLOTHING,
@@ -651,12 +703,26 @@
 	user.underwear = chosen_profile.underwear
 	user.undershirt = chosen_profile.undershirt
 	user.socks = chosen_profile.socks
+	
+	// SKYRAT EDIT START
+	user.underwear_color = chosen_profile.underwear_color
+	user.undershirt_color = chosen_profile.undershirt_color
+	user.socks_color = chosen_profile.socks_color
+	user.emissive_eyes = chosen_profile.emissive_eyes
+	user.dna.mutant_bodyparts = chosen_dna.mutant_bodyparts.Copy()
+	user.dna.body_markings = chosen_dna.body_markings.Copy()
+	user.grad_style = LAZYLISTDUPLICATE(chosen_profile.grad_style)
+	user.grad_color = LAZYLISTDUPLICATE(chosen_profile.grad_color)
+	user.physique = chosen_profile.physique
+	// SKYRAT EDIT END
 
 	chosen_dna.transfer_identity(user, TRUE)
 
-	user.Digitigrade_Leg_Swap(!(DIGITIGRADE in chosen_dna.species?.species_traits))
-	user.updateappearance(mutcolor_update = TRUE)
-	user.update_body()
+	for(var/obj/item/bodypart/limb as anything in user.bodyparts)
+		if(IS_ORGANIC_LIMB(limb))
+			limb.update_limb(is_creating = TRUE)
+
+	user.updateappearance(mutcolor_update = TRUE, eyeorgancolor_update = TRUE) // SKYRAT EDIT
 	user.domutcheck()
 
 	// Get rid of any scars from previous Changeling-ing
@@ -728,6 +794,13 @@
 		new_flesh_item.inhand_icon_state = chosen_profile.inhand_icon_state_list[slot]
 		new_flesh_item.worn_icon = chosen_profile.worn_icon_list[slot]
 		new_flesh_item.worn_icon_state = chosen_profile.worn_icon_state_list[slot]
+		
+		// SKYRAT EDIT START
+		new_flesh_item.worn_icon_digi = chosen_profile.worn_icon_digi_list[slot]
+		new_flesh_item.worn_icon_teshari = chosen_profile.worn_icon_teshari_list[slot]
+		new_flesh_item.worn_icon_vox = chosen_profile.worn_icon_vox_list[slot]
+		new_flesh_item.supports_variations_flags = chosen_profile.supports_variations_flags_list[slot]
+		// SKYRAT EDIT END
 
 		if(istype(new_flesh_item, /obj/item/changeling/id) && chosen_profile.id_icon)
 			var/obj/item/changeling/id/flesh_id = new_flesh_item
@@ -744,6 +817,12 @@
 			attempted_fake_scar.fake = TRUE
 
 	user.regenerate_icons()
+	
+	// SKYRAT EDIT START
+	chosen_dna.transfer_identity(user, TRUE)
+	user.updateappearance(mutcolor_update = TRUE, eyeorgancolor_update = TRUE)
+	user.regenerate_icons()
+	// SKYRAT EDIT END
 
 // Changeling profile themselves. Store a data to store what every DNA instance looked like.
 /datum/changeling_profile
@@ -785,6 +864,22 @@
 	var/datum/icon_snapshot/profile_snapshot
 	/// ID HUD icon associated with the profile
 	var/id_icon
+	
+	/// SKYRAT EDIT START
+	var/underwear_color
+	var/undershirt_color
+	var/socks_color
+	var/eye_color_left
+	var/eye_color_right
+	var/emissive_eyes
+	var/list/grad_style = list("None", "None")
+	var/list/grad_color = list(null, null)
+	var/physique
+	var/list/worn_icon_digi_list = list()
+	var/list/worn_icon_teshari_list = list()
+	var/list/worn_icon_vox_list = list()
+	var/list/supports_variations_flags_list = list()
+	/// SKYRAT EDIT END
 
 /datum/changeling_profile/Destroy()
 	qdel(dna)
@@ -816,6 +911,22 @@
 	new_profile.stored_scars = stored_scars.Copy()
 	new_profile.profile_snapshot = profile_snapshot
 	new_profile.id_icon = id_icon
+	
+	// SKYRAT EDIT START
+	new_profile.underwear_color = underwear_color
+	new_profile.undershirt_color = undershirt_color
+	new_profile.socks_color = socks_color
+	new_profile.eye_color_left = eye_color_left
+	new_profile.eye_color_right = eye_color_right
+	new_profile.emissive_eyes = emissive_eyes
+	new_profile.grad_style = LAZYLISTDUPLICATE(grad_style)
+	new_profile.grad_color = LAZYLISTDUPLICATE(grad_color)
+	new_profile.physique = physique
+	new_profile.worn_icon_digi_list = worn_icon_digi_list.Copy()
+	new_profile.worn_icon_teshari_list = worn_icon_teshari_list.Copy()
+	new_profile.worn_icon_vox_list = worn_icon_vox_list.Copy()
+	new_profile.supports_variations_flags_list = supports_variations_flags_list.Copy()
+	// SKYRAT EDIT END
 
 /datum/antagonist/changeling/roundend_report()
 	var/list/parts = list()
@@ -876,7 +987,7 @@
 	name = "\improper Headslug Changeling"
 	show_in_antagpanel = FALSE
 	give_objectives = FALSE
-	soft_antag = TRUE
+	count_against_dynamic_roll_chance = FALSE
 
 	genetic_points = 5
 	total_genetic_points = 5

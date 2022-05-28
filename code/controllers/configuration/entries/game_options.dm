@@ -149,6 +149,7 @@
 
 /datum/config_entry/flag/arrivals_shuttle_require_safe_latejoin //Require the arrivals shuttle to be operational in order for latejoiners to join
 
+/* SKYRAT EDIT REMOVAL - MOVED TO MODULAR ALERTS
 /datum/config_entry/string/alert_green
 	default = "All threats to the station have passed. Security may not have weapons visible, privacy laws are once again fully enforced."
 
@@ -163,7 +164,7 @@
 
 /datum/config_entry/string/alert_red_downto
 	default = "The station's destruction has been averted. There is still however an immediate serious threat to the station. Security may have weapons unholstered at all times, random searches are allowed and advised."
-/* SKYRAT EDIT REMOVAL - MOVED TO MODULAR ALERTS
+
 /datum/config_entry/string/alert_delta
 	default = "Destruction of the station is imminent. All crew are instructed to obey all instructions given by heads of staff. Any violations of these orders can be punished by death. This is not a drill."
 */
@@ -258,8 +259,6 @@
 	movedelay_type = /mob/living/simple_animal
 /////////////////////////////////////////////////
 
-/datum/config_entry/flag/virtual_reality //Will virtual reality be loaded
-
 /datum/config_entry/flag/roundstart_away //Will random away mission be loaded.
 
 /datum/config_entry/number/gateway_delay //How long the gateway takes before it activates. Default is half an hour. Only matters if roundstart_away is enabled.
@@ -278,8 +277,6 @@
 
 /datum/config_entry/flag/silent_ai
 /datum/config_entry/flag/silent_borg
-
-/datum/config_entry/flag/sandbox_autoclose // close the sandbox panel after spawning an item, potentially reducing griff
 
 /datum/config_entry/number/default_laws //Controls what laws the AI spawns with.
 	default = 0
