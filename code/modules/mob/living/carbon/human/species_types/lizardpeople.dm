@@ -9,6 +9,7 @@
 		TRAIT_ADVANCEDTOOLUSER,
 		TRAIT_CAN_STRIP,
 		TRAIT_CAN_USE_FLIGHT_POTION,
+		TRAIT_LITERATE,
 	)
 	inherent_biotypes = MOB_ORGANIC|MOB_HUMANOID|MOB_REPTILE
 	mutant_bodyparts = list("tail_lizard" = "Smooth", "spines" = "None", "body_markings" = "None", "legs" = "Normal Legs")
@@ -30,7 +31,7 @@
 	skinned_type = /obj/item/stack/sheet/animalhide/lizard
 	exotic_bloodtype = "L"
 	disliked_food = GRAIN | DAIRY | CLOTH
-	liked_food = GROSS | MEAT | SEAFOOD | NUTS
+	liked_food = GROSS | MEAT | SEAFOOD | NUTS | BUGS
 	inert_mutation = /datum/mutation/human/firebreath
 	deathsound = 'sound/voice/lizard/deathsound.ogg'
 	wings_icons = list("Dragon")
@@ -195,6 +196,7 @@ Lizard subspecies: ASHWALKERS
 		TRAIT_CAN_STRIP,
 		TRAIT_CHUNKYFINGERS,
 		TRAIT_VIRUSIMMUNE,
+		//TRAIT_LITERATE, ashwalkers are uneducated hillbillies from lavaland 
 	)
 	species_language_holder = /datum/language_holder/lizard/ash
 	digitigrade_customization = DIGITIGRADE_FORCED
@@ -216,6 +218,7 @@ Lizard subspecies: SILVER SCALED
 		TRAIT_PIERCEIMMUNE,
 		TRAIT_VIRUSIMMUNE,
 		TRAIT_WINE_TASTER,
+		TRAIT_LITERATE,
 	)
 	species_language_holder = /datum/language_holder/lizard //SKYRAT EDIT CHANGE
 	mutanttongue = /obj/item/organ/tongue/lizard //SKYRAT EDIT CHANGE

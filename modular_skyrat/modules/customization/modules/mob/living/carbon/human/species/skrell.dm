@@ -13,6 +13,7 @@
 		TRAIT_ADVANCEDTOOLUSER,
 		TRAIT_CAN_STRIP,
 		TRAIT_CAN_USE_FLIGHT_POTION,
+		TRAIT_LITERATE,
 	)
 	inherent_biotypes = MOB_ORGANIC|MOB_HUMANOID
 	say_mod = "warbles"
@@ -82,7 +83,7 @@
 	))
 
 /obj/item/organ/heart/skrell
-	name = "Skrellian Heart"
+	name = "skrellian heart"
 	icon = 'modular_skyrat/master_files/icons/mob/species/skrell_organ.dmi'
 	icon_state = "heart"
 

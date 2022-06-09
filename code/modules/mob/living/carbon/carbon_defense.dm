@@ -438,15 +438,14 @@
 		StaminaKnockdown(10, TRUE)
 		//Paralyze(40) - SKYRAT EDIT REMOVAL
 	//Jitter and other fluff.
-	jitteriness += 1000
-	do_jitter_animation(jitteriness)
+	do_jitter_animation(300)
+	adjust_timed_status_effect(20 SECONDS, /datum/status_effect/jitter)
 	adjust_timed_status_effect(4 SECONDS, /datum/status_effect/speech/stutter)
-	addtimer(CALLBACK(src, .proc/secondary_shock, should_stun), 20)
+	addtimer(CALLBACK(src, .proc/secondary_shock, should_stun), 2 SECONDS)
 	return shock_damage
 
-///Called slightly after electrocute act to reduce jittering and apply a secondary stun.
+///Called slightly after electrocute act to apply a secondary stun.
 /mob/living/carbon/proc/secondary_shock(should_stun)
-	jitteriness = max(jitteriness - 990, 10)
 	if(should_stun)
 		//Paralyze(60) - SKYRAT EDIT REMOVAL
 		StaminaKnockdown(10, TRUE) //SKYRAT EDIT ADDITION
@@ -472,6 +471,16 @@
 						null, span_hear("You hear the rustling of clothes."), DEFAULT_MESSAGE_RANGE, list(helper, src))
 		to_chat(helper, span_notice("You shake [src] trying to pick [p_them()] up!"))
 		to_chat(src, span_notice("[helper] shakes you to get you up!"))
+	//SKYRAT EDIT ADDITION BEGIN - EMOTES -- SENSITIVE SNOUT TRAIT ADDITION
+	else if(helper.zone_selected == BODY_ZONE_PRECISE_MOUTH)
+		nosound = TRUE
+		playsound(src, 'modular_skyrat/modules/emotes/sound/emotes/Nose_boop.ogg', 50, 0)
+		if(HAS_TRAIT(src, TRAIT_SENSITIVESNOUT) && get_location_accessible(src, BODY_ZONE_PRECISE_MOUTH))
+			to_chat(src, span_warning("[helper] boops you on your sensitive nose, sending you to the ground!"))
+			src.Knockdown(20)
+			src.apply_damage(30, STAMINA, BODY_ZONE_CHEST)
+		helper.visible_message(span_notice("[helper] boops [src]'s nose."), span_notice("You boop [src] on the nose."))
+	//SKYRAT EDIT ADDITION END
 	else if(check_zone(helper.zone_selected) == BODY_ZONE_HEAD && get_bodypart(BODY_ZONE_HEAD)) //Headpats!
 		helper.visible_message(span_notice("[helper] gives [src] a pat on the head to make [p_them()] feel better!"), \
 					null, span_hear("You hear a soft patter."), DEFAULT_MESSAGE_RANGE, list(helper, src))
@@ -494,18 +503,6 @@
 			to_chat(helper, span_warning("[src] makes a grumbling noise as you pull on [p_their()] tail."))
 		else
 			SEND_SIGNAL(src, COMSIG_ADD_MOOD_EVENT, "tailpulled", /datum/mood_event/tailpulled)
-
-	//SKYRAT EDIT ADDITION BEGIN - EMOTES -- SENSITIVE SNOUT TRAIT ADDITION
-	else if(helper.zone_selected == BODY_ZONE_PRECISE_MOUTH)
-		nosound = TRUE
-		playsound(src, 'modular_skyrat/modules/emotes/sound/emotes/Nose_boop.ogg', 50, 0)
-		if(HAS_TRAIT(src, TRAIT_SENSITIVESNOUT) && get_location_accessible(src, BODY_ZONE_PRECISE_MOUTH))
-			to_chat(src, span_warning("[helper] boops you on your sensitive nose, sending you to the ground!"))
-			src.Knockdown(20)
-			src.apply_damage(30, STAMINA, BODY_ZONE_CHEST)
-		helper.visible_message(span_notice("[helper] boops [src]'s nose."), \
-		span_notice("You boop [src] on the nose."))
-	//SKYRAT EDIT ADDITION END
 
 	else
 		helper.visible_message(span_notice("[helper] hugs [src] to make [p_them()] feel better!"), \
