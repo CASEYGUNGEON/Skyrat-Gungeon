@@ -91,7 +91,7 @@
 /datum/reagent/drug/dopamine/on_mob_life(mob/living/carbon/affected_mob, delta_time, times_fired)
 	affected_mob.set_timed_status_effect(2 SECONDS * REM * delta_time, /datum/status_effect/drugginess)
 	if(prob(7))
-		affected_mob.emote(pick("shaking", "moan"))
+		affected_mob.try_lewd_autoemote(pick("shaking", "moan"))
 	..()
 
 /datum/reagent/drug/dopamine/overdose_start(mob/living/carbon/human/human_mob)
@@ -105,19 +105,19 @@
 	affected_mob.adjustPleasure(0.3)
 	affected_mob.adjustPain(-0.5)
 	if(prob(2))
-		affected_mob.emote(pick("moan", "twitch_s"))
+		affected_mob.try_lewd_autoemote(pick("moan", "twitch_s"))
 	return
 
 /*
 *	INITIALISE
 */
 
-/obj/item/organ/genital
+/obj/item/organ/external/genital
 	var/datum/reagents/internal_fluids
 	var/list/contained_item
 	var/obj/item/inserted_item //Used for toys
 
-/obj/item/organ/genital/breasts/build_from_dna(datum/dna/DNA, associated_key)
+/obj/item/organ/external/genital/breasts/build_from_dna(datum/dna/DNA, associated_key)
 	. = ..()
 	var/breasts_count = 0
 	var/size = 0.5
@@ -133,7 +133,7 @@
 			breasts_count = 3
 	internal_fluids = new /datum/reagents(size * breasts_count * 60)
 
-/obj/item/organ/genital/testicles/build_from_dna(datum/dna/DNA, associated_key)
+/obj/item/organ/external/genital/testicles/build_from_dna(datum/dna/DNA, associated_key)
 	. = ..()
 	var/size = 0.5
 	if(DNA.features["balls_size"] > 0)
@@ -141,7 +141,7 @@
 
 	internal_fluids = new /datum/reagents(size * 20)
 
-/obj/item/organ/genital/vagina/build_from_dna(datum/dna/DNA, associated_key)
+/obj/item/organ/external/genital/vagina/build_from_dna(datum/dna/DNA, associated_key)
 	. = ..()
 	internal_fluids = new /datum/reagents(10)
 
@@ -196,9 +196,9 @@
 /datum/status_effect/body_fluid_regen/tick()
 	var/mob/living/carbon/human/affected_mob = owner
 	if(owner.stat != DEAD && affected_mob.client?.prefs?.read_preference(/datum/preference/toggle/erp/sex_toy))
-		var/obj/item/organ/genital/testicles/balls = owner.getorganslot(ORGAN_SLOT_TESTICLES)
-		var/obj/item/organ/genital/breasts/breasts = owner.getorganslot(ORGAN_SLOT_BREASTS)
-		var/obj/item/organ/genital/vagina/vagina = owner.getorganslot(ORGAN_SLOT_VAGINA)
+		var/obj/item/organ/external/genital/testicles/balls = owner.getorganslot(ORGAN_SLOT_TESTICLES)
+		var/obj/item/organ/external/genital/breasts/breasts = owner.getorganslot(ORGAN_SLOT_BREASTS)
+		var/obj/item/organ/external/genital/vagina/vagina = owner.getorganslot(ORGAN_SLOT_VAGINA)
 
 		var/interval = 5
 		if(balls)
@@ -243,9 +243,9 @@
 			arousal_status = arousal_flag
 			if(istype(src, /mob/living/carbon/human))
 				var/mob/living/carbon/human/target = src
-				for(var/i = 1, i <= target.internal_organs.len, i++)
-					if(istype(target.internal_organs[i], /obj/item/organ/genital))
-						var/obj/item/organ/genital/target_genital = target.internal_organs[i]
+				for(var/i = 1, i <= target.external_organs.len, i++)
+					if(istype(target.external_organs[i], /obj/item/organ/external/genital))
+						var/obj/item/organ/external/genital/target_genital = target.external_organs[i]
 						if(!target_genital.aroused == AROUSAL_CANT)
 							target_genital.aroused = arousal_status
 							target_genital.update_sprite_suffix()
@@ -268,7 +268,7 @@
 	var/temp_pain = -0.5
 	if(affected_mob.stat != DEAD)
 
-		var/obj/item/organ/genital/testicles/balls = affected_mob.getorganslot(ORGAN_SLOT_TESTICLES)
+		var/obj/item/organ/external/genital/testicles/balls = affected_mob.getorganslot(ORGAN_SLOT_TESTICLES)
 		if(balls)
 			if(balls.internal_fluids.holder_full())
 				temp_arousal += 0.08
@@ -283,12 +283,12 @@
 			temp_arousal -= 0.1
 		if(affected_mob.arousal >= AROUS_SYS_STRONG && affected_mob.stat != DEAD)
 			if(prob(3))
-				affected_mob.emote(pick("moan", "blush"))
+				affected_mob.try_lewd_autoemote(pick("moan", "blush"))
 			temp_pleasure += 0.1
 			//moan
 		if(affected_mob.pleasure >= PLEAS_SYS_EDGE && affected_mob.stat != DEAD)
 			if(prob(3))
-				affected_mob.emote(pick("moan", "twitch_s"))
+				affected_mob.try_lewd_autoemote(pick("moan", "twitch_s"))
 			//moan x2
 
 	affected_mob.adjustArousal(temp_arousal)
@@ -313,7 +313,7 @@
 				if(change_amount > 0)
 					adjustArousal(-change_amount)
 			if(prob(2) && pain > pain_limit && change_amount > pain_limit / 10)
-				emote(pick("scream", "shiver")) //SCREAM!!!
+				try_lewd_autoemote(pick("scream", "shiver")) //SCREAM!!!
 		else
 			if(change_amount > 0)
 				adjustArousal(change_amount)
@@ -381,9 +381,9 @@
 	if(!client?.prefs?.read_preference(/datum/preference/toggle/erp/autocum) && manual != TRUE)
 		return
 
-	var/obj/item/organ/genital/penis/penis = getorganslot(ORGAN_SLOT_PENIS)
-	var/obj/item/organ/genital/testicles/testicles = getorganslot(ORGAN_SLOT_TESTICLES)
-	var/obj/item/organ/genital/vagina/vagina = getorganslot(ORGAN_SLOT_VAGINA)
+	var/obj/item/organ/external/genital/penis/penis = getorganslot(ORGAN_SLOT_PENIS)
+	var/obj/item/organ/external/genital/testicles/testicles = getorganslot(ORGAN_SLOT_TESTICLES)
+	var/obj/item/organ/external/genital/vagina/vagina = getorganslot(ORGAN_SLOT_VAGINA)
 
 	if(!has_status_effect(/datum/status_effect/climax_cooldown) && client?.prefs?.read_preference(/datum/preference/toggle/erp/sex_toy))
 		if(!HAS_TRAIT(src, TRAIT_NEVERBONER) && !has_status_effect(/datum/status_effect/climax_cooldown))
@@ -455,9 +455,9 @@
 							span_userlove("You shoot string after string of hot cum, hitting the floor!"))
 					else
 						var/mob/living/carbon/human/target_human = interactable_inrange_humans[target_choice]
-						var/obj/item/organ/genital/vagina/target_vagina = getorganslot(ORGAN_SLOT_VAGINA)
-						var/obj/item/organ/genital/anus/target_anus = getorganslot(ORGAN_SLOT_ANUS)
-						var/obj/item/organ/genital/penis/target_penis = getorganslot(ORGAN_SLOT_PENIS)
+						var/obj/item/organ/external/genital/vagina/target_vagina = getorganslot(ORGAN_SLOT_VAGINA)
+						var/obj/item/organ/external/genital/anus/target_anus = getorganslot(ORGAN_SLOT_ANUS)
+						var/obj/item/organ/external/genital/penis/target_penis = getorganslot(ORGAN_SLOT_PENIS)
 
 						var/list/target_buttons = list()
 
@@ -489,7 +489,7 @@
 							visible_message(span_userlove("[src] hilts [p_their()] cock into [target_human]'s [climax_into_choice], shooting cum into it!"), \
 								span_userlove("You hilt your cock into [target_human]'s [climax_into_choice], shooting cum into it!"))
 							to_chat(target_human, span_userlove("Your [climax_into_choice] fills with warm cum as [src] shoots [p_their()] load into it."))
-				emote("moan")
+				try_lewd_autoemote("moan")
 				testicles.reagents.remove_all(testicles.reagents.total_volume * 0.6)
 				apply_status_effect(/datum/status_effect/climax)
 				apply_status_effect(/datum/status_effect/climax_cooldown)
@@ -514,6 +514,12 @@
 				span_purple("You can't have an orgasm!"))
 			return TRUE
 
+// Let's not force lewd emotes from folk who don't want them, mmm~?
+/mob/living/carbon/proc/try_lewd_autoemote(emote)
+	if(!client?.prefs?.read_preference(/datum/preference/toggle/erp/autoemote))
+		return
+	emote(emote)
+
 /datum/status_effect/climax_cooldown
 	id = "climax_cooldown"
 	tick_interval = 10
@@ -521,10 +527,10 @@
 	alert_type = null
 
 /datum/status_effect/climax_cooldown/tick()
-	var/obj/item/organ/genital/vagina/vagina = owner.getorganslot(ORGAN_SLOT_VAGINA)
-	var/obj/item/organ/genital/testicles/balls = owner.getorganslot(ORGAN_SLOT_TESTICLES)
-	var/obj/item/organ/genital/testicles/penis = owner.getorganslot(ORGAN_SLOT_PENIS)
-	var/obj/item/organ/genital/testicles/anus = owner.getorganslot(ORGAN_SLOT_ANUS)
+	var/obj/item/organ/external/genital/vagina/vagina = owner.getorganslot(ORGAN_SLOT_VAGINA)
+	var/obj/item/organ/external/genital/testicles/balls = owner.getorganslot(ORGAN_SLOT_TESTICLES)
+	var/obj/item/organ/external/genital/testicles/penis = owner.getorganslot(ORGAN_SLOT_PENIS)
+	var/obj/item/organ/external/genital/testicles/anus = owner.getorganslot(ORGAN_SLOT_ANUS)
 
 	if(penis)
 		penis.aroused = AROUSAL_NONE
@@ -641,7 +647,7 @@
 *	AROUSAL INDICATOR
 */
 
-/obj/item/organ/brain/on_life(delta_time, times_fired) //All your horny is here *points to the head*
+/obj/item/organ/internal/brain/on_life(delta_time, times_fired) //All your horny is here *points to the head*
 	. = ..()
 	var/mob/living/carbon/human/brain_owner = owner
 	if(istype(brain_owner, /mob/living/carbon/human) && brain_owner.client?.prefs?.read_preference(/datum/preference/toggle/erp/sex_toy))
@@ -762,7 +768,7 @@
 			cumface.icon_state = "cumface_lizard"
 		else if(target.dna.species.id == SPECIES_MONKEY)
 			cumface.icon_state = "cumface_monkey"
-		else if(target.dna.species.id == SPECIES_VOX)
+		else if(target.dna.species.id == SPECIES_VOX || target.dna.species.id == SPECIES_VOX_PRIMALIS)
 			cumface.icon_state = "cumface_vox"
 		else if(target.dna.species.mutant_bodyparts["snout"])
 			cumface.icon_state = "cumface_lizard"
@@ -898,8 +904,8 @@
 		to_chat(user, span_warning("You can't cum onto [target]."))
 		return
 	var/mob/living/carbon/human/affected_human = user
-	var/obj/item/organ/genital/testicles/testicles = affected_human.getorganslot(ORGAN_SLOT_TESTICLES)
-	var/obj/item/organ/genital/penis/penis = affected_human.getorganslot(ORGAN_SLOT_PENIS)
+	var/obj/item/organ/external/genital/testicles/testicles = affected_human.getorganslot(ORGAN_SLOT_TESTICLES)
+	var/obj/item/organ/external/genital/penis/penis = affected_human.getorganslot(ORGAN_SLOT_PENIS)
 	var/datum/sprite_accessory/genital/penis_accessory = GLOB.sprite_accessories["penis"][affected_human.dna.species.mutant_bodyparts["penis"][MUTANT_INDEX_NAME]]
 	if(penis_accessory.is_hidden(affected_human))
 		to_chat(user, span_notice("You need to expose yourself in order to masturbate."))
@@ -922,7 +928,7 @@
 		applied_reagents.expose(target, TOUCH)
 		log_combat(user, target, "came on")
 		if(prob(40))
-			user.emote("moan")
+			affected_human.try_lewd_autoemote("moan")
 		qdel(src)
 
 // Jerk off into bottles
@@ -937,8 +943,8 @@
 	if(user.stat == DEAD)
 		return
 	var/mob/living/carbon/human/affected_human = user
-	var/obj/item/organ/genital/testicles/testicles = affected_human.getorganslot(ORGAN_SLOT_TESTICLES)
-	var/obj/item/organ/genital/penis/penis = affected_human.getorganslot(ORGAN_SLOT_PENIS)
+	var/obj/item/organ/external/genital/testicles/testicles = affected_human.getorganslot(ORGAN_SLOT_TESTICLES)
+	var/obj/item/organ/external/genital/penis/penis = affected_human.getorganslot(ORGAN_SLOT_PENIS)
 	var/datum/sprite_accessory/genital/spriteP = GLOB.sprite_accessories["penis"][affected_human.dna.species.mutant_bodyparts["penis"][MUTANT_INDEX_NAME]]
 	if(spriteP.is_hidden(affected_human))
 		to_chat(user, span_notice("You need to expose yourself in order to masturbate."))
@@ -959,7 +965,7 @@
 			playsound(target, SFX_DESECRATION, 50, TRUE, ignore_walls = FALSE)
 			applied_reagents.trans_to(target, cum_volume)
 			if(prob(40))
-				user.emote("moan")
+				affected_human.try_lewd_autoemote("moan")
 			qdel(src)
 	else
 		user.visible_message(span_warning("[user] starts masturbating onto [target]!"), span_danger("You start masturbating onto [target]!"))
@@ -969,7 +975,7 @@
 			playsound(target, SFX_DESECRATION, 50, TRUE, ignore_walls = FALSE)
 			new/obj/effect/decal/cleanable/cum(target_turf)
 			if(prob(40))
-				user.emote("moan")
+				affected_human.try_lewd_autoemote("moan")
 
 			if(target.icon_state=="stickyweb1"|target.icon_state=="stickyweb2")
 				target.icon = 'modular_skyrat/modules/modular_items/lewd_items/icons/obj/lewd_decals/lewd_decals.dmi'

@@ -27,6 +27,10 @@
 	/// objects with these flags won't burn.
 	var/immunity_resistance_flags = LAVA_PROOF
 
+/turf/open/lava/Initialize(mapload)
+	. = ..()
+	AddElement(/datum/element/lazy_fishing_spot, FISHING_SPOT_PRESET_LAVALAND_LAVA)
+
 /turf/open/lava/ex_act(severity, target)
 	return
 
@@ -245,6 +249,7 @@
 	smoothing_flags = SMOOTH_BITMASK | SMOOTH_BORDER
 	smoothing_groups = list(SMOOTH_GROUP_TURF_OPEN, SMOOTH_GROUP_FLOOR_LAVA)
 	canSmoothWith = list(SMOOTH_GROUP_FLOOR_LAVA)
+	underfloor_accessibility = 2 //This avoids strangeness when routing pipes / wires along catwalks over lava
 
 /turf/open/lava/smooth/lava_land_surface
 	initial_gas_mix = LAVALAND_DEFAULT_ATMOS

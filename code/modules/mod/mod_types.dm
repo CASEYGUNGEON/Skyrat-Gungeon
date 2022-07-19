@@ -218,12 +218,13 @@
 	theme = /datum/mod_theme/ninja
 	applied_cell = /obj/item/stock_parts/cell/ninja
 	initial_modules = list(
+		/obj/item/mod/module/storage,
 		/obj/item/mod/module/noslip,
+		/obj/item/mod/module/status_readout,
 		/obj/item/mod/module/stealth/ninja,
 		/obj/item/mod/module/dispenser/ninja,
 		/obj/item/mod/module/dna_lock/reinforced,
 		/obj/item/mod/module/emp_shield/pulse,
-		/obj/item/mod/module/status_readout,
 	)
 
 /obj/item/mod/control/pre_equipped/prototype
@@ -336,8 +337,8 @@
 		/obj/item/mod/module/emp_shield/advanced,
 	)
 
-/obj/item/mod/control/pre_equipped/timeline
-	theme = /datum/mod_theme/timeline
+/obj/item/mod/control/pre_equipped/chrono
+	theme = /datum/mod_theme/chrono
 	applied_core = /obj/item/mod/core/infinite
 	initial_modules = list(
 		/obj/item/mod/module/eradication_lock,

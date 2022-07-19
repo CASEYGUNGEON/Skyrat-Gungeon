@@ -1,8 +1,8 @@
 // Set up the types of items that can be placed in the mask
-/datum/component/storage/concrete/pockets/small/bdsm_mask
-	max_items = 1
+/datum/storage/pockets/small/bdsm_mask
+	max_slots = 1
 
-/datum/component/storage/concrete/pockets/small/bdsm_mask/Initialize()
+/datum/storage/pockets/small/bdsm_mask/New()
 	. = ..()
 	can_hold = typecacheof(/obj/item/reagent_containers/glass/lewd_filter)
 
@@ -16,7 +16,6 @@
 	righthand_file = 'modular_skyrat/modules/modular_items/lewd_items/icons/mob/lewd_inhands/lewd_inhand_right.dmi'
 	icon_state = "mask"
 	inhand_icon_state = "mask"
-	pocket_storage_component_path = /datum/component/storage/concrete/pockets/small/bdsm_mask
 	slot_flags = ITEM_SLOT_MASK
 	var/mask_on = FALSE
 	var/current_mask_color = "pink"
@@ -39,6 +38,10 @@
 	w_class = WEIGHT_CLASS_SMALL
 	modifies_speech = TRUE
 	flags_cover = MASKCOVERSMOUTH
+
+/obj/item/clothing/mask/gas/bdsm_mask/Initialize(mapload)
+	. = ..()
+	create_storage(type = /datum/storage/pockets/small/bdsm_mask)
 
 /obj/item/clothing/mask/gas/bdsm_mask/proc/update_action_buttons_icons()
 	var/datum/action/item_action/button
@@ -146,7 +149,7 @@
 				. = ..()
 
 // Handler for clicking on a slot in a mask by hand with a filter
-/datum/component/storage/concrete/pockets/small/bdsm_mask/attackby(datum/source, obj/item/used_item, mob/user, params)
+/datum/storage/pockets/small/bdsm_mask/attackby(datum/source, obj/item/used_item, mob/user, params)
 	. = ..()
 	var/obj/item/clothing/mask/gas/bdsm_mask/worn_mask = user.get_item_by_slot(ITEM_SLOT_MASK)
 	if(istype(used_item, /obj/item/reagent_containers/glass/lewd_filter))
@@ -180,7 +183,7 @@
 			mask.time_to_choke_left = mask.time_to_choke
 			mask.breath_status = TRUE
 			var/mob/living/carbon/affected_mob = usr
-			affected_mob.emote("inhale")
+			affected_mob.try_lewd_autoemote("inhale")
 			var/obj/item/reagent_containers/glass/lewd_filter/filter = mask.contents[1]
 			filter.reagent_consumption(affected_mob, filter.amount_per_transfer_from_this)
 		return
@@ -196,7 +199,7 @@
 			if(breath_status == FALSE)
 				time_to_choke_left = time_to_choke
 				breath_status = TRUE
-				affected_human.emote("inhale")
+				affected_human.try_lewd_autoemote("inhale")
 			to_chat(affected_human, span_purple("You suddenly find it much harder to breathe!."))
 			START_PROCESSING(SSobj, src)
 			time_to_choke_left = time_to_choke
@@ -235,26 +238,30 @@
 // Mask choke processor
 /obj/item/clothing/mask/gas/bdsm_mask/process(delta_time)
 	var/mob/living/affected_mob = loc
+	var/mob/living/carbon/affected_carbon = affected_mob
+
 	if(time_to_choke_left < time_to_choke/2 && breath_status == TRUE)
 		if(temp_check == FALSE && affected_mob.stat == CONSCIOUS) // If user passed out while wearing this we should continue when he wakes up
 			breath_status = FALSE
 			time_to_choke_left = time_to_choke
 			temp_check = TRUE
 
-		if(affected_mob.stat == CONSCIOUS)
-			affected_mob.emote("exhale")
-			breath_status = FALSE
-			if(rand(0, 3) == 0)
-				affected_mob.emote("moan")
-		else
-			breath_status = TRUE
-			temp_check = FALSE
+		if(ispath(affected_carbon))
+			if(affected_mob.stat == CONSCIOUS)
+				affected_carbon.try_lewd_autoemote("exhale")
+				breath_status = FALSE
+				if(rand(0, 3) == 0)
+					affected_carbon.try_lewd_autoemote("moan")
+			else
+				breath_status = TRUE
+				temp_check = FALSE
 
 	if(time_to_choke_left <= 0)
 		if(tt <= 0)
 			if(affected_mob.stat == CONSCIOUS)
 				affected_mob.adjustOxyLoss(rand(4, 8)) // Oxy dmg
-				affected_mob.emote(pick("gasp", "choke", "moan"))
+				if(ispath(affected_carbon))
+					affected_carbon.try_lewd_autoemote(pick("gasp", "choke", "moan"))
 				tt = time
 			else
 				breath_status = TRUE

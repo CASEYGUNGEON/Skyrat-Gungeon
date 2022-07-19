@@ -64,6 +64,7 @@
 		"turbine_part_compressor",
 		"turbine_part_rotor",
 		"turbine_part_stator",
+		"watering_can",
 	)
 
 /datum/techweb_node/mmi
@@ -335,6 +336,7 @@
 		"chem_heater",
 		"chem_mass_spec",
 		//SKYRAT EDIT - RESEARCH DESIGNS
+		"anesthetic_machine",
 		"smartdartgun",
 		//SKYRAT EDIT - END
 		"chem_master",
@@ -955,7 +957,7 @@
 		"paladin_module",
 		"robocop_module",
 		"corporate_module",
-		"drone_module",		
+		"drone_module",
 		"oxygen_module",
 		"safeguard_module",
 		"protectstation_module",
@@ -964,7 +966,7 @@
 		"remove_module",
 	)
 	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = 2500)
-	
+
 /datum/techweb_node/ai_adv
 	id = "ai_adv"
 	display_name = "Advanced Artificial Intelligence"
@@ -1204,6 +1206,7 @@
 		"diagnostic_hud_projector",
 		"meson_hud_projector",
 		"science_hud_projector",
+		"permit_glasses",
 		//SKYRAT EDIT END - RESEARCH DESIGNS
 	)
 	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = 1500)
@@ -1279,7 +1282,6 @@
 		"cybernetic_stomach_tier2",
 	)
 	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = 1000)
-	
 
 /datum/techweb_node/cyber_organs_upgraded
 	id = "cyber_organs_upgraded"
@@ -1410,6 +1412,7 @@
 		"hydro_tray",
 		"portaseeder",
 		"seed_extractor",
+		"adv_watering_can",
 	)
 	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = 4000)
 	discount_experiments = list(/datum/experiment/scanning/random/plants/wild = 3000)
@@ -1424,12 +1427,11 @@
 		"gene_shears",
 		"handdrill",
 		"jawsoflife",
-		"ranged_analyzer",
 		"laserscalpel",
 		"mechanicalpinches",
+		"rangedanalyzer",
 		"searingtool",
 	)
-	//SKYRAT EDIT ADDITION - ("ranged_analyzer"),
 	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = 7500)
 	discount_experiments = list(/datum/experiment/scanning/random/material/hard/one = 5000)
 
@@ -1656,6 +1658,8 @@
 		"mod_mag_harness",
 		"mod_pathfinder",
 		"mod_holster",
+		"mod_sonar",
+		"mod_projectile_dampener",
 	)
 	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = 2500)
 
@@ -1743,7 +1747,7 @@
 	id = "mech_gygax"
 	display_name = "EXOSUIT: Gygax"
 	description = "Gygax exosuit designs"
-	prereq_ids = list("adv_mecha", "weaponry")
+	prereq_ids = list("adv_mecha", "adv_mecha_armor")
 	design_ids = list(
 		"gygax_armor",
 		"gygax_chassis",
@@ -1764,7 +1768,7 @@
 	id = "mech_durand"
 	display_name = "EXOSUIT: Durand"
 	description = "Durand exosuit designs"
-	prereq_ids = list("adv_mecha", "adv_weaponry")
+	prereq_ids = list("adv_mecha", "adv_mecha_armor")
 	design_ids = list(
 		"durand_armor",
 		"durand_chassis",
@@ -1785,7 +1789,7 @@
 	id = "mecha_phazon"
 	display_name = "EXOSUIT: Phazon"
 	description = "Phazon exosuit designs"
-	prereq_ids = list("adv_mecha", "weaponry" , "micro_bluespace")
+	prereq_ids = list("adv_mecha", "adv_mecha_armor" , "micro_bluespace")
 	design_ids = list(
 		"phazon_armor",
 		"phazon_chassis",
@@ -1845,22 +1849,24 @@
 	)
 	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = 2500)
 
-/datum/techweb_node/mech_modules
-	id = "adv_mecha_modules"
-	display_name = "Simple Exosuit Modules"
-	description = "An advanced piece of mech weaponry"
+/datum/techweb_node/mech_armor
+	id = "adv_mecha_armor"
+	display_name = "Exosuit Heavy Armor Research"
+	description = "Recreating heavy armor with new rapid fabrication techniques."
 	prereq_ids = list("adv_mecha", "bluespace_power")
 	design_ids = list(
 		"mech_ccw_armor",
 		"mech_proj_armor",
 	)
-	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = 2500)
+	required_experiments = list(/datum/experiment/scanning/random/mecha_damage_scan)
+	discount_experiments = list(/datum/experiment/scanning/random/mecha_destroyed_scan = 5000)
+	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = 10000)
 
 /datum/techweb_node/mech_scattershot
 	id = "mecha_tools"
 	display_name = "Exosuit Weapon (LBX AC 10 \"Scattershot\")"
 	description = "An advanced piece of mech weaponry"
-	prereq_ids = list("exotic_ammo")
+	prereq_ids = list("adv_mecha")
 	design_ids = list(
 		"mech_scattershot",
 		"mech_scattershot_ammo",
@@ -1922,7 +1928,7 @@
 	id = "mech_disabler"
 	display_name = "Exosuit Weapon (CH-DS \"Peacemaker\" Mounted Disabler)"
 	description = "A basic piece of mech weaponry"
-	prereq_ids = list("beam_weapons")
+	prereq_ids = list("adv_mecha")
 	design_ids = list(
 		"mech_disabler",
 	)
@@ -1985,7 +1991,7 @@
 	id = "mech_lmg"
 	display_name = "Exosuit Weapon (\"Ultra AC 2\" LMG)"
 	description = "An advanced piece of mech weaponry"
-	prereq_ids = list("exotic_ammo")
+	prereq_ids = list("adv_mecha")
 	design_ids = list(
 		"mech_lmg",
 		"mech_lmg_ammo",
@@ -2126,6 +2132,7 @@
 		"largecrossbow",
 		"rapidsyringe",
 		"suppressor",
+		"super_pointy_tape",
 	)
 	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = 10000)
 	hidden = TRUE
@@ -2250,6 +2257,18 @@
 	prereq_ids = list("base")
 	design_ids = list(
 		"mod_disposal",
+	)
+	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = 2500)
+	hidden = TRUE
+	experimental = TRUE
+
+/datum/techweb_node/fishing
+	id = "fishing"
+	display_name = "Fishing Technology"
+	description = "Cutting edge fishing advancements."
+	prereq_ids = list("base")
+	design_ids = list(
+		"fishing_rod_tech"
 	)
 	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = 2500)
 	hidden = TRUE

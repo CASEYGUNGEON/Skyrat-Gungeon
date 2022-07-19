@@ -195,7 +195,7 @@
 /mob/living/carbon/human/proc/has_penis(required_state = REQUIRE_ANY)
 	if(issilicon(src) && has_penis)
 		return TRUE
-	var/obj/item/organ/genital/peepee = getorganslot(ORGAN_SLOT_PENIS)
+	var/obj/item/organ/external/genital/peepee = getorganslot(ORGAN_SLOT_PENIS)
 	if(peepee)
 		switch(required_state)
 			if(REQUIRE_ANY)
@@ -215,7 +215,7 @@
 	return FALSE
 
 /mob/living/carbon/human/proc/has_balls(required_state = REQUIRE_ANY)
-	var/obj/item/organ/genital/peepee = getorganslot(ORGAN_SLOT_TESTICLES)
+	var/obj/item/organ/external/genital/peepee = getorganslot(ORGAN_SLOT_TESTICLES)
 	if(peepee)
 		switch(required_state)
 			if(REQUIRE_ANY)
@@ -237,7 +237,7 @@
 /mob/living/carbon/human/proc/has_vagina(required_state = REQUIRE_ANY)
 	if(issilicon(src) && has_vagina)
 		return TRUE
-	var/obj/item/organ/genital/peepee = getorganslot(ORGAN_SLOT_VAGINA)
+	var/obj/item/organ/external/genital/peepee = getorganslot(ORGAN_SLOT_VAGINA)
 	if(peepee)
 		switch(required_state)
 			if(REQUIRE_ANY)
@@ -257,7 +257,7 @@
 	return FALSE
 
 /mob/living/carbon/human/proc/has_breasts(required_state = REQUIRE_ANY)
-	var/obj/item/organ/genital/peepee = getorganslot(ORGAN_SLOT_BREASTS)
+	var/obj/item/organ/external/genital/peepee = getorganslot(ORGAN_SLOT_BREASTS)
 	if(peepee)
 		switch(required_state)
 			if(REQUIRE_ANY)
@@ -279,7 +279,7 @@
 /mob/living/carbon/human/proc/has_anus(required_state = REQUIRE_ANY)
 	if(issilicon(src))
 		return TRUE
-	var/obj/item/organ/genital/peepee = getorganslot(ORGAN_SLOT_ANUS)
+	var/obj/item/organ/external/genital/peepee = getorganslot(ORGAN_SLOT_ANUS)
 	if(peepee)
 		switch(required_state)
 			if(REQUIRE_ANY)
@@ -552,19 +552,30 @@
 /datum/outfit/equip(mob/living/carbon/human/target, visualsOnly = FALSE)
 	. = ..()
 	if(.)
-		pre_equip(target, visualsOnly)
+		var/need_updating = FALSE
 		if(vagina)
 			target.equip_to_slot_or_del(new vagina(target), ITEM_SLOT_VAGINA, TRUE)
+			need_updating = TRUE
+
 		if(anus)
 			target.equip_to_slot_or_del(new anus(target), ITEM_SLOT_ANUS, TRUE)
+			need_updating = TRUE
+
 		if(nipples)
 			target.equip_to_slot_or_del(new nipples(target), ITEM_SLOT_NIPPLES, TRUE)
+			need_updating = TRUE
+
 		if(penis)
 			target.equip_to_slot_or_del(new penis(target), ITEM_SLOT_PENIS, TRUE)
-		post_equip(target, visualsOnly)
-		target.update_body()
-		target?.hud_used?.hidden_inventory_update(target)
-	return TRUE
+			need_updating = TRUE
+
+		if(need_updating)
+			target.update_body()
+			target?.hud_used?.hidden_inventory_update(target)
+
+		return TRUE
+
+	return .
 
 
 // Support fingerprints when working with ERP slots

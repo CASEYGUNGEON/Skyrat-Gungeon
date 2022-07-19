@@ -209,7 +209,7 @@
 			for(var/x in T.contents)
 				var/obj/item/item = x
 				AfterPutItemOnTable(item, user)
-			SEND_SIGNAL(I, COMSIG_TRY_STORAGE_QUICK_EMPTY, drop_location())
+			I.atom_storage.remove_all(drop_location())
 			user.visible_message(span_notice("[user] empties [I] on [src]."))
 			return
 		// If the tray IS empty, continue on (tray will be placed on the table like other items)
@@ -356,16 +356,15 @@
 	attached_items -= source
 	UnregisterSignal(source, COMSIG_MOVABLE_MOVED)
 
-/obj/structure/table/rolling/Moved(atom/OldLoc, Dir)
+/obj/structure/table/rolling/Moved(atom/old_loc, movement_dir, forced, list/old_locs, momentum_change = TRUE)
 	. = ..()
 	if(!loc)
 		return
-	for(var/mob/living/living_mob in OldLoc.contents)//Kidnap everyone on top
+	for(var/mob/living/living_mob in old_loc.contents)//Kidnap everyone on top
 		living_mob.forceMove(loc)
-	for(var/x in attached_items)
-		var/atom/movable/AM = x
-		if(!AM.Move(loc))
-			RemoveItemFromTable(AM, AM.loc)
+	for(var/atom/movable/attached_movable as anything in attached_items)
+		if(!attached_movable.Move(loc))
+			RemoveItemFromTable(attached_movable, attached_movable.loc)
 
 /*
  * Glass tables
@@ -676,8 +675,8 @@
  */
 
 /obj/structure/table/optable//SKYRAT EDIT - ICON OVERRIDEN BY AESTHETICS - SEE MODULE
-	name = "stasis operating table" // SKYRAT EDIT name = "operating table"
-	desc = "Used for advanced medical procedures. Now comes with built in stasis technology, patented by Cinco: A Family Company!" // SKYRAT EDIT desc = "Used for advanced medical procedures."
+	name = "operating table"
+	desc = "Used for advanced medical procedures."
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "optable"
 	buildstack = /obj/item/stack/sheet/mineral/silver
@@ -737,26 +736,6 @@
 		return TRUE
 	return FALSE
 
-///SKYRAT EDIT: Operating Tables now provide Stasis
-/obj/structure/table/optable/proc/chill_out(mob/living/target)
-	var/freq = rand(24750, 26550)
-	playsound(src, 'sound/effects/spray.ogg', 5, TRUE, 2, frequency = freq)
-	target.apply_status_effect(/datum/status_effect/grouped/stasis, STASIS_MACHINE_EFFECT)
-	ADD_TRAIT(target, TRAIT_TUMOR_SUPPRESSED, TRAIT_GENERIC)
-	target.extinguish_mob()
-
-/obj/structure/table/optable/proc/thaw_them(mob/living/target)
-	target.remove_status_effect(/datum/status_effect/grouped/stasis, STASIS_MACHINE_EFFECT)
-	REMOVE_TRAIT(target, TRAIT_TUMOR_SUPPRESSED, TRAIT_GENERIC)
-
-/obj/structure/table/optable/post_buckle_mob(mob/living/L)
-	set_patient(L)
-	chill_out(L)
-
-/obj/structure/table/optable/post_unbuckle_mob(mob/living/L)
-	set_patient(null)
-	thaw_them(L)
-///SKYRAT EDIT END
 /*
  * Racks
  */

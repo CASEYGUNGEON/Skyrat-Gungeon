@@ -224,6 +224,42 @@ GLOBAL_LIST_INIT(loadout_helmets, generate_loadout_items(/datum/loadout_item/hea
 	name = "Bowler Hat"
 	item_path = /obj/item/clothing/head/bowler
 
+/datum/loadout_item/head/bearpelt
+	name = "Brown Bear Pelt"
+	item_path = /obj/item/clothing/head/pelt
+
+/datum/loadout_item/head/bearpeltblack
+	name = "Black Bear Pelt"
+	item_path = /obj/item/clothing/head/pelt/black
+
+/datum/loadout_item/head/bearpeltwhite
+	name = "White Bear Pelt"
+	item_path = /obj/item/clothing/head/pelt/white
+
+/datum/loadout_item/head/wolfpelt
+	name = "Brown Wolf Pelt"
+	item_path = /obj/item/clothing/head/pelt/wolf
+
+/datum/loadout_item/head/wolfpeltblack
+	name = "Black Wolf Pelt"
+	item_path = /obj/item/clothing/head/pelt/wolf/black
+
+/datum/loadout_item/head/wolfpeltwhite
+	name = "White Wolf Pelt"
+	item_path = /obj/item/clothing/head/pelt/wolf/white
+
+/datum/loadout_item/head/tigerpelt
+	name = "Shiny Tiger Pelt"
+	item_path = /obj/item/clothing/head/pelt/tiger
+
+/datum/loadout_item/head/tigerpeltsnow
+	name = "Snow Tiger Pelt"
+	item_path = /obj/item/clothing/head/pelt/snow_tiger
+
+/datum/loadout_item/head/tigerpeltpink
+	name = "Pink Tiger Pelt"
+	item_path = /obj/item/clothing/head/pelt/pink_tiger
+
 /*
 *	CHRISTMAS
 */
@@ -385,6 +421,14 @@ GLOBAL_LIST_INIT(loadout_helmets, generate_loadout_items(/datum/loadout_item/hea
 	name = "Fashionable Baseball Cap"
 	item_path = /obj/item/clothing/head/soft/yankee
 
+/datum/loadout_item/head/blastwave_helmet
+	name = "Blastwave Plastic Helmet"
+	item_path = /obj/item/clothing/head/blastwave
+
+/datum/loadout_item/head/blastwave_cap
+	name = "Blastwave Peaked Cap"
+	item_path = /obj/item/clothing/head/blastwave/officer
+
 /*
 *	COWBOY
 */
@@ -468,6 +512,12 @@ GLOBAL_LIST_INIT(loadout_helmets, generate_loadout_items(/datum/loadout_item/hea
 	item_path = /obj/item/clothing/head/imperial/hop
 	restricted_roles = list(JOB_HEAD_OF_PERSONNEL, JOB_NT_REP)
 
+
+/datum/loadout_item/head/imperial_cmo
+	name = "Chief Medical Officer's Naval Cap"
+	item_path = /obj/item/clothing/head/imperial/cmo
+	restricted_roles = list(JOB_CHIEF_MEDICAL_OFFICER)
+
 /datum/loadout_item/head/imperial_ce
 	name = "Chief Engineer's blast helmet."
 	item_path = /obj/item/clothing/head/imperial/ce
@@ -490,7 +540,7 @@ GLOBAL_LIST_INIT(loadout_helmets, generate_loadout_items(/datum/loadout_item/hea
 
 /datum/loadout_item/head/blasthelmet
 	name = "General's Helmet"
-	item_path = /obj/item/clothing/head/imperialhelmet
+	item_path = /obj/item/clothing/head/imperial/helmet
 	restricted_roles = list(JOB_WARDEN,JOB_DETECTIVE,JOB_SECURITY_MEDIC,JOB_SECURITY_OFFICER,JOB_CORRECTIONS_OFFICER,JOB_CAPTAIN, JOB_HEAD_OF_PERSONNEL, JOB_BLUESHIELD, JOB_HEAD_OF_SECURITY, JOB_RESEARCH_DIRECTOR, JOB_QUARTERMASTER, JOB_CHIEF_MEDICAL_OFFICER, JOB_CHIEF_ENGINEER)
 
 /datum/loadout_item/head/navybluehoscap
@@ -529,18 +579,23 @@ GLOBAL_LIST_INIT(loadout_helmets, generate_loadout_items(/datum/loadout_item/hea
 	restricted_roles = list(JOB_MEDICAL_DOCTOR, JOB_CHIEF_MEDICAL_OFFICER, JOB_GENETICIST, JOB_CHEMIST, JOB_VIROLOGIST,JOB_SECURITY_MEDIC)
 
 /datum/loadout_item/head/imperial_generic
-	name = "Naval Officer Cap"
+	name = "Grey Naval Officer Cap"
 	item_path = /obj/item/clothing/head/imperial
 	restricted_roles = list(JOB_CAPTAIN, JOB_HEAD_OF_PERSONNEL, JOB_BLUESHIELD, JOB_HEAD_OF_SECURITY, JOB_RESEARCH_DIRECTOR, JOB_QUARTERMASTER, JOB_CHIEF_MEDICAL_OFFICER, JOB_CHIEF_ENGINEER, JOB_NT_REP)
 
 /datum/loadout_item/head/imperial_grey
-	name = "Grey Naval Officer Cap"
+	name = "Dark Grey Naval Officer Cap"
 	item_path = /obj/item/clothing/head/imperial/grey
 	restricted_roles = list(JOB_CAPTAIN, JOB_HEAD_OF_PERSONNEL, JOB_BLUESHIELD, JOB_HEAD_OF_SECURITY, JOB_RESEARCH_DIRECTOR, JOB_QUARTERMASTER, JOB_CHIEF_MEDICAL_OFFICER, JOB_CHIEF_ENGINEER, JOB_NT_REP)
 
 /datum/loadout_item/head/imperial_red
 	name = "Red Naval Officer Cap"
 	item_path = /obj/item/clothing/head/imperial/red
+	restricted_roles = list(JOB_CAPTAIN, JOB_HEAD_OF_PERSONNEL, JOB_BLUESHIELD, JOB_HEAD_OF_SECURITY, JOB_RESEARCH_DIRECTOR, JOB_QUARTERMASTER, JOB_CHIEF_MEDICAL_OFFICER, JOB_CHIEF_ENGINEER)
+
+/datum/loadout_item/head/imperial_white
+	name = "White Naval Officer Cap"
+	item_path = /obj/item/clothing/head/imperial/white
 	restricted_roles = list(JOB_CAPTAIN, JOB_HEAD_OF_PERSONNEL, JOB_BLUESHIELD, JOB_HEAD_OF_SECURITY, JOB_RESEARCH_DIRECTOR, JOB_QUARTERMASTER, JOB_CHIEF_MEDICAL_OFFICER, JOB_CHIEF_ENGINEER)
 
 /*

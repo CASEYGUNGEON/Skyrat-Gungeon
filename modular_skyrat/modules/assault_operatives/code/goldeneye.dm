@@ -75,7 +75,7 @@ SUBSYSTEM_DEF(goldeneye)
 // Goldeneye key
 /obj/item/goldeneye_key
 	name = "\improper GoldenEye authentication keycard"
-	desc = "A high profile authentication keycard to Nanotrasen's GoldenEye defence network. It seems indestructable."
+	desc = "A high profile authentication keycard to Nanotrasen's GoldenEye defence network. It seems indestructible."
 	icon = 'modular_skyrat/modules/assault_operatives/icons/goldeneye.dmi'
 	icon_state = "goldeneye_key"
 	resistance_flags = INDESTRUCTIBLE | LAVA_PROOF | FIRE_PROOF | UNACIDABLE | ACID_PROOF
@@ -91,6 +91,7 @@ SUBSYSTEM_DEF(goldeneye)
 	goldeneye_tag = "G[rand(10000, 99999)]"
 	name = "\improper GoldenEye authentication keycard: [goldeneye_tag]"
 	AddComponent(/datum/component/gps, goldeneye_tag)
+	SSpoints_of_interest.make_point_of_interest(src)
 
 /obj/item/goldeneye_key/examine(mob/user)
 	. = ..()

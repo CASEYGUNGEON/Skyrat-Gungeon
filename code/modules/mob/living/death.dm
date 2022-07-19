@@ -75,7 +75,8 @@
 	tod = station_time_timestamp()
 	var/turf/T = get_turf(src)
 	if(mind && mind.name && mind.active && !istype(T.loc, /area/centcom/ctf))
-		deadchat_broadcast(" has died at <b>[get_area_name(T)]</b>.", "<b>[mind.name]</b>", follow_target = src, turf_target = T, message_type=DEADCHAT_DEATHRATTLE)
+		if(!isanimal_or_basicmob(src) || HAS_TRAIT(src, TRAIT_ALERT_GHOSTS_ON_DEATH))
+			deadchat_broadcast(" has died at <b>[get_area_name(T)]</b>.", "<b>[mind.name]</b>", follow_target = src, turf_target = T, message_type=DEADCHAT_DEATHRATTLE)
 		if(SSlag_switch.measures[DISABLE_DEAD_KEYLOOP] && !client?.holder)
 			to_chat(src, span_deadsay(span_big("Observer freelook is disabled.\nPlease use Orbit, Teleport, and Jump to look around.")))
 			ghostize(TRUE)
@@ -93,7 +94,6 @@
 	cut_overlay(GLOB.combat_indicator_overlay) //SKYRAT EDIT ADDITION - COMBAT_INDICATOR
 	set_combat_indicator(FALSE) //SKYRAT EDIT ADDITION - COMBAT_INDICATOR
 	set_ssd_indicator(FALSE) //SKYRAT EDIT ADDITION - SSD_INDICATOR
-	set_typing_indicator(FALSE) //SKYRAT EDIT ADDITION - TYPING_INDICATOR
 
 	SEND_SIGNAL(src, COMSIG_LIVING_DEATH, gibbed)
 	SEND_GLOBAL_SIGNAL(COMSIG_GLOB_MOB_DEATH, src, gibbed)

@@ -124,6 +124,7 @@
 		return
 
 	winset(src, "title_browser", "is-disabled=false;is-visible=true")
+	winset(src, "status_bar", "is-visible=false")
 
 	var/datum/asset/assets = get_asset_datum(/datum/asset/simple/lobby) //Sending pictures to the client
 	assets.send(src)
@@ -150,6 +151,7 @@
 /mob/dead/new_player/proc/hide_title_screen()
 	if(client?.mob)
 		winset(client, "title_browser", "is-disabled=true;is-visible=false")
+		winset(client, "status_bar", "is-visible=true")
 
 /mob/dead/new_player/proc/play_lobby_button_sound()
 	SEND_SOUND(src, sound('modular_skyrat/master_files/sound/effects/save.ogg'))
@@ -165,6 +167,9 @@
 				if(IsJobUnavailable(job_datum.title, TRUE) != JOB_AVAILABLE)
 					continue
 				dept_data += job_datum.title
+		if(dept_data.len <= 0) //Congratufuckinglations
+			tgui_alert(src, "There are literally no random jobs available for you on this server, ahelp for assistance.")
+			return
 		var/random = pick(dept_data)
 		var/randomjob = "<p><center><a href='byond://?src=[REF(src)];SelectedJob=[random]'>[random]</a></center><center><a href='byond://?src=[REF(src)];SelectedJob=Random'>Reroll</a></center><center><a href='byond://?src=[REF(src)];cancrand=[1]'>Cancel</a></center></p>"
 		var/datum/browser/popup = new(src, "randjob", "<div align='center'>Random Job</div>", 200, 150)

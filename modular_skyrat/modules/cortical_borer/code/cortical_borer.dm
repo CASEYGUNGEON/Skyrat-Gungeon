@@ -24,7 +24,7 @@ GLOBAL_VAR_INIT(successful_blood_chem, 0)
 	return FALSE
 
 //so if a person is debrained, the borer is removed
-/obj/item/organ/brain/Remove(mob/living/carbon/target, special = 0, no_id_transfer = FALSE)
+/obj/item/organ/internal/brain/Remove(mob/living/carbon/target, special = 0, no_id_transfer = FALSE)
 	. = ..()
 	var/mob/living/simple_animal/cortical_borer/cb_inside = target.has_borer()
 	if(cb_inside)
@@ -157,8 +157,8 @@ GLOBAL_VAR_INIT(successful_blood_chem, 0)
 										/datum/reagent/toxin/formaldehyde,
 										/datum/reagent/impurity/libitoil,
 										/datum/reagent/impurity/mannitol,
-										/datum/reagent/medicine/c2/libital/borer_version,
-										/datum/reagent/medicine/c2/lenturi/borer_version,
+										/datum/reagent/medicine/c2/libital,
+										/datum/reagent/medicine/c2/lenturi,
 										/datum/reagent/medicine/c2/convermol,
 										/datum/reagent/medicine/c2/seiver,
 										/datum/reagent/lithium,

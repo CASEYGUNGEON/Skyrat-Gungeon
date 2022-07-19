@@ -21,7 +21,7 @@
 	liked_food = VEGETABLES | DAIRY | CLOTH
 	disliked_food = FRUIT | GROSS | BUGS
 	toxic_food = MEAT | RAW | SEAFOOD
-	mutanteyes = /obj/item/organ/eyes/moth
+	mutanteyes = /obj/item/organ/internal/eyes/moth
 	changesource_flags = MIRROR_BADMIN | WABBAJACK | MIRROR_MAGIC | MIRROR_PRIDE | ERT_SPAWN | RACE_SWAP | SLIME_EXTRACT
 	species_language_holder = /datum/language_holder/moth
 	wings_icons = list("Megamoth", "Mothra")
@@ -66,8 +66,6 @@
 		return 10 //flyswatters deal 10x damage to moths
 	return 1
 
-//SKYRAT EDIT REMOVAL BEGIN
-/*
 /datum/species/moth/randomize_main_appearance_element(mob/living/carbon/human/human_mob)
 	var/wings = pick(GLOB.moth_wings_list)
 	mutant_bodyparts["wings"] = wings
@@ -75,8 +73,6 @@
 	human_mob.dna.features["wings"] = wings
 	human_mob.dna.features["moth_wings"] = wings
 	human_mob.update_body()
-*/
-//SKYRAT EDIT REMOVAL END
 
 /datum/species/moth/get_scream_sound(mob/living/carbon/human/human)
 	return 'sound/voice/moth/scream_moth.ogg'

@@ -25,11 +25,11 @@
 			if(target.stat == DEAD)
 				return
 			if(prob(70))
-				target.emote(pick("laugh", "giggle", "twitch", "twitch_s"))
+				target.try_lewd_autoemote(pick("laugh", "giggle", "twitch", "twitch_s"))
 
 		if(BODY_ZONE_CHEST)
 			targetedsomewhere = TRUE
-			var/obj/item/organ/genital/badonkers = target.getorganslot(ORGAN_SLOT_BREASTS)
+			var/obj/item/organ/external/genital/badonkers = target.getorganslot(ORGAN_SLOT_BREASTS)
 			if(!(target.is_topless() || badonkers.visibility_preference == GENITAL_ALWAYS_SHOW))
 				to_chat(user, span_danger("[target]'s chest is covered!"))
 				return
@@ -37,7 +37,7 @@
 			if(target.stat == DEAD)
 				return
 			if(prob(70))
-				target.emote(pick("laugh", "giggle", "twitch", "twitch_s", "moan", ))
+				target.try_lewd_autoemote(pick("laugh", "giggle", "twitch", "twitch_s", "moan", ))
 
 		if(BODY_ZONE_L_LEG, BODY_ZONE_R_LEG)
 			targetedsomewhere = TRUE
@@ -52,7 +52,7 @@
 			if(target.stat == DEAD)
 				return
 			if(prob(70))
-				target.emote(pick("laugh", "giggle", "twitch", "twitch_s", "moan", ))
+				target.try_lewd_autoemote(pick("laugh", "giggle", "twitch", "twitch_s", "moan", ))
 
 		if(BODY_ZONE_R_ARM, BODY_ZONE_L_ARM)
 			targetedsomewhere = TRUE
@@ -63,7 +63,7 @@
 			if(target.stat == DEAD)
 				return
 			if(prob(70))
-				target.emote(pick("laugh", "giggle", "twitch", "twitch_s", "moan", ))
+				target.try_lewd_autoemote(pick("laugh", "giggle", "twitch", "twitch_s", "moan", ))
 	if(!targetedsomewhere)
 		return
 	target.do_jitter_animation()

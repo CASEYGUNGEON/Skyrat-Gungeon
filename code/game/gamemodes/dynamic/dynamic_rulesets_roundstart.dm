@@ -27,7 +27,7 @@
 	cost = 8 // Avoid raising traitor threat above this, as it is the default low cost ruleset.
 	scaling_cost = 9
 	requirements = list(8,8,8,8,8,8,8,8,8,8)
-	antag_cap = list("denominator" = 24)
+	antag_cap = list("denominator" = 38)
 	var/autotraitor_cooldown = (15 MINUTES)
 
 /datum/dynamic_ruleset/roundstart/traitor/pre_execute(population)
@@ -67,6 +67,7 @@
 
 	// If we're not forced, we're going to make sure we can actually have an AI in this shift,
 	if(!forced && min(ai_job.total_positions - ai_job.current_positions, ai_job.spawn_positions) <= 0)
+		log_game("DYNAMIC: FAIL: [src] could not run, because there is nobody who wants to be an AI")
 		return FALSE
 
 	return ..()
@@ -332,7 +333,7 @@
 
 /datum/dynamic_ruleset/roundstart/bloodcult/ready(population, forced = FALSE)
 	required_candidates = get_antag_cap(population)
-	. = ..()
+	return ..()
 
 /datum/dynamic_ruleset/roundstart/bloodcult/pre_execute(population)
 	. = ..()
@@ -393,7 +394,7 @@
 
 /datum/dynamic_ruleset/roundstart/nuclear/ready(population, forced = FALSE)
 	required_candidates = get_antag_cap(population)
-	. = ..()
+	return ..()
 
 /datum/dynamic_ruleset/roundstart/nuclear/pre_execute(population)
 	. = ..()

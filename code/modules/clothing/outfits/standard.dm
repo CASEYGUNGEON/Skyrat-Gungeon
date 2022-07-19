@@ -64,7 +64,8 @@
 	head = /obj/item/clothing/head/fedora/det_hat
 	l_hand = /obj/item/gun/ballistic
 	l_hand = null
-	r_pocket = /obj/item/ammo_box/c10mm
+	//r_pocket = /obj/item/ammo_box/c10mm
+	r_hand = /obj/item/ammo_box/c10mm // SKYRAT EDIT CHANGE
 
 /datum/outfit/tournament/janitor
 	name = "tournament janitor"
@@ -240,6 +241,7 @@
 	id = /obj/item/card/id/advanced/chameleon/black
 	id_trim = /datum/id_trim/reaper_assassin
 	uniform = /obj/item/clothing/under/suit/black
+	neck = /obj/item/clothing/neck/tie/red/hitman/tied
 	belt = /obj/item/modular_computer/tablet/pda/heads
 	ears = /obj/item/radio/headset
 	gloves = /obj/item/clothing/gloves/color/black
@@ -260,11 +262,11 @@
 	for(var/obj/item/briefcase_item in sec_briefcase)
 		qdel(briefcase_item)
 	for(var/i = 3 to 0 step -1)
-		SEND_SIGNAL(sec_briefcase, COMSIG_TRY_STORAGE_INSERT, new /obj/item/stack/spacecash/c1000, null, TRUE, TRUE)
-	SEND_SIGNAL(sec_briefcase, COMSIG_TRY_STORAGE_INSERT, new /obj/item/gun/energy/recharge/ebow, null, TRUE, TRUE)
-	SEND_SIGNAL(sec_briefcase, COMSIG_TRY_STORAGE_INSERT, new /obj/item/gun/ballistic/revolver/mateba, null, TRUE, TRUE)
-	SEND_SIGNAL(sec_briefcase, COMSIG_TRY_STORAGE_INSERT, new /obj/item/ammo_box/a357, null, TRUE, TRUE)
-	SEND_SIGNAL(sec_briefcase, COMSIG_TRY_STORAGE_INSERT, new /obj/item/grenade/c4/x4, null, TRUE, TRUE)
+		sec_briefcase.contents += new /obj/item/stack/spacecash/c1000
+	sec_briefcase.contents += new /obj/item/gun/energy/recharge/ebow
+	sec_briefcase.contents += new /obj/item/gun/ballistic/revolver/mateba
+	sec_briefcase.contents += new /obj/item/ammo_box/a357
+	sec_briefcase.contents += new /obj/item/grenade/c4/x4
 
 	var/obj/item/modular_computer/tablet/pda/heads/pda = H.belt
 	pda.saved_identification = H.real_name
@@ -337,13 +339,13 @@
 	r_pocket = /obj/item/teleportation_scroll
 	l_hand = /obj/item/staff
 
-/datum/outfit/wizard/post_equip(mob/living/carbon/human/H, visualsOnly = FALSE)
+/datum/outfit/wizard/post_equip(mob/living/carbon/human/wizard, visualsOnly = FALSE)
 	if(visualsOnly)
 		return
 
-	var/obj/item/spellbook/S = locate() in H.back
-	if(S)
-		S.owner = H
+	var/obj/item/spellbook/new_spellbook = locate() in wizard.back
+	if(new_spellbook)
+		new_spellbook.owner = wizard.mind
 
 /datum/outfit/wizard/apprentice
 	name = "Wizard Apprentice"
@@ -365,6 +367,14 @@
 	suit = /obj/item/clothing/suit/wizrobe/marisa
 	head = /obj/item/clothing/head/wizard/marisa
 	shoes = /obj/item/clothing/shoes/sneakers/marisa
+
+/datum/outfit/wizard/academy
+	name = "Academy Wizard"
+	r_pocket = null
+	r_hand = null
+	suit = /obj/item/clothing/suit/wizrobe/red
+	head = /obj/item/clothing/head/wizard/red
+	backpack_contents = list(/obj/item/storage/box/survival = 1)
 
 /datum/outfit/centcom/soviet
 	name = "Soviet Admiral"
@@ -398,6 +408,7 @@
 	id = /obj/item/card/id/advanced
 	id_trim = /datum/id_trim/mobster
 	uniform = /obj/item/clothing/under/suit/black_really
+	neck = /obj/item/clothing/neck/tie/red/tied
 	ears = /obj/item/radio/headset
 	glasses = /obj/item/clothing/glasses/sunglasses
 	gloves = /obj/item/clothing/gloves/color/black
@@ -420,7 +431,7 @@
 	uniform = /obj/item/clothing/under/color/white
 	suit_store = /obj/item/tank/internals/oxygen
 	mask = /obj/item/clothing/mask/breath
-	back = /obj/item/mod/control/pre_equipped/timeline
+	back = /obj/item/mod/control/pre_equipped/chrono
 
 /datum/outfit/chrono_agent/post_equip(mob/living/carbon/human/agent, visualsOnly)
 	. = ..()

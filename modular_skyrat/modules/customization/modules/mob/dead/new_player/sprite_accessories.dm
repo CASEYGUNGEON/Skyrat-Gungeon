@@ -2,6 +2,8 @@ GLOBAL_LIST_EMPTY(cached_mutant_icon_files)
 
 /// The flag to show that snouts should use the muzzled sprite.
 #define SPRITE_ACCESSORY_USE_MUZZLED_SPRITE (1<<0)
+/// The flag to show that this tail sprite can wag.
+#define SPRITE_ACCESSORY_WAG_ABLE (1<<1)
 
 /datum/sprite_accessory
 	///Unique key of an accessroy. All tails should have "tail", ears "ears" etc.
@@ -85,6 +87,9 @@ GLOBAL_LIST_EMPTY(cached_mutant_icon_files)
 /datum/sprite_accessory/proc/get_special_render_state(mob/living/carbon/human/H)
 	return null
 
+/datum/sprite_accessory/proc/get_special_render_key(mob/living/carbon/human/owner)
+	return key
+
 /datum/sprite_accessory/proc/get_special_render_colour(mob/living/carbon/human/H, passed_state)
 	return null
 
@@ -134,14 +139,14 @@ GLOBAL_LIST_EMPTY(cached_mutant_icon_files)
 	genetic = TRUE
 
 /datum/sprite_accessory/spines/is_hidden(mob/living/carbon/human/H, obj/item/bodypart/HD)
-	var/obj/item/organ/tail/T = H.getorganslot(ORGAN_SLOT_TAIL)
-	if(!T || (H.wear_suit && (H.try_hide_mutant_parts || H.wear_suit.flags_inv & HIDETAIL || H.wear_suit.flags_inv & HIDESPINE)))
+	var/obj/item/organ/external/tail/tail = H.getorganslot(ORGAN_SLOT_EXTERNAL_TAIL)
+	if(!tail || (H.wear_suit && (H.try_hide_mutant_parts || H.wear_suit.flags_inv & HIDETAIL || H.wear_suit.flags_inv & HIDESPINE)))
 		return TRUE
 	return FALSE
 
 /datum/sprite_accessory/spines/get_special_render_state(mob/living/carbon/human/H)
-	var/obj/item/organ/tail/T = H.getorganslot(ORGAN_SLOT_TAIL)
-	if(T && T.wagging)
+	var/obj/item/organ/external/tail/tail = H.getorganslot(ORGAN_SLOT_EXTERNAL_TAIL)
+	if(tail && tail.wag_flags & WAG_WAGGING)
 		return "[icon_state]_wagging"
 	return icon_state
 
@@ -322,6 +327,11 @@ GLOBAL_LIST_EMPTY(cached_mutant_icon_files)
 	icon_state = "leggings-stir"
 	use_static = null
 
+/datum/sprite_accessory/socks/leggings/latex
+	name = "Socks - Latex"
+	icon_state = "socks_latex"
+	use_static = TRUE
+
 /datum/sprite_accessory/underwear
 	icon = 'modular_skyrat/master_files/icons/mob/clothing/underwear.dmi'
 	///Whether the underwear uses a special sprite for digitigrade style (i.e. briefs, not panties). Adds a "_d" suffix to the icon state
@@ -458,6 +468,11 @@ GLOBAL_LIST_EMPTY(cached_mutant_icon_files)
 	name = "Chastity Cage"
 	icon_state = "chastcage"
 	use_static = null
+
+/datum/sprite_accessory/underwear/latex
+	name = "Panties - Latex"
+	icon_state = "panties_latex"
+	use_static = TRUE
 
 /datum/sprite_accessory/underwear/lizared
 	name = "LIZARED Underwear"
@@ -610,6 +625,12 @@ GLOBAL_LIST_EMPTY(cached_mutant_icon_files)
 	icon_state = "bra_strapless"
 	gender = FEMALE
 	use_static = null
+
+/datum/sprite_accessory/undershirt/bra_latex
+	name = "Bra, Latex"
+	icon_state = "bra_latex"
+	gender = FEMALE
+	use_static = TRUE
 
 /datum/sprite_accessory/undershirt/striped_bra
 	name = "Bra - Striped"
