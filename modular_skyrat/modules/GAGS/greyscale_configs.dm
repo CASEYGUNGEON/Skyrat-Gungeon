@@ -351,6 +351,18 @@
 	name = "Worn Jumpsuit - Vox"
 	icon_file = 'modular_skyrat/modules/GAGS/icons/jumpsuit_vox.dmi'
 
+/datum/greyscale_config/jumpsuit_prison_worn/vox
+	name = "Worn Prison Jumpsuit - Vox"
+	icon_file = 'modular_skyrat/modules/GAGS/icons/jumpsuit_vox.dmi'
+
+/datum/greyscale_config/jumpsuit_worn/better_vox
+	name = "Worn Jumpsuit - Better Vox"
+	icon_file = 'modular_skyrat/modules/GAGS/icons/jumpsuit_better_vox.dmi'
+
+/datum/greyscale_config/jumpsuit_prison_worn/better_vox
+	name = "Worn Prison Jumpsuit - Better Vox"
+	icon_file = 'modular_skyrat/modules/GAGS/icons/jumpsuit_better_vox.dmi'
+
 /datum/greyscale_config/jumpsuit_worn/taur/snake
 	name = "Worn Jumpsuit - Naga"
 	icon_file = 'modular_skyrat/modules/GAGS/icons/jumpsuit_snake.dmi'
@@ -359,10 +371,6 @@
 	name = "Worn Prison Jumpsuit - Naga"
 	icon_file = 'modular_skyrat/modules/GAGS/icons/jumpsuit_snake.dmi'
 
-/datum/greyscale_config/jumpsuit_prison_worn/vox
-	name = "Worn Prison Jumpsuit - Vox"
-	icon_file = 'modular_skyrat/modules/GAGS/icons/jumpsuit_vox.dmi'
-
 /datum/greyscale_config/jumpsuit_worn/teshari
 	name = "Worn Jumpsuit - Teshari"
 	icon_file = 'modular_skyrat/modules/GAGS/icons/jumpsuit_teshari.dmi'
@@ -370,6 +378,30 @@
 /datum/greyscale_config/jumpsuit_prison_worn/teshari
 	name = "Worn Prison Jumpsuit - Teshari"
 	icon_file = 'modular_skyrat/modules/GAGS/icons/jumpsuit_teshari.dmi'
+
+// PANTS / SHORTS
+
+/datum/greyscale_config/slacks_worn/digi
+	name = "Worn Slacks - Digitigrade"
+	icon_file = 'modular_skyrat/modules/GAGS/icons/shorts_pants.dmi'
+
+/datum/greyscale_config/jeans_worn/digi
+	name = "Worn Jeans - Digitigrade"
+	icon_file = 'modular_skyrat/modules/GAGS/icons/shorts_pants.dmi'
+
+/datum/greyscale_config/shorts_worn/digi
+	name = "Worn Shorts - Digitigrade"
+	icon_file = 'modular_skyrat/modules/GAGS/icons/shorts_pants.dmi'
+
+/datum/greyscale_config/jeanshorts_worn/digi
+	name = "Worn Jean Shorts - Digitigrade"
+	icon_file = 'modular_skyrat/modules/GAGS/icons/shorts_pants.dmi'
+
+// DRESSES / SKIRTS
+
+/datum/greyscale_config/plaidskirt_worn/digi
+	name = "Worn Plaid Skirt - Digitigrade"
+	icon_file = 'modular_skyrat/modules/GAGS/icons/dress.dmi'
 
 // KILT
 
