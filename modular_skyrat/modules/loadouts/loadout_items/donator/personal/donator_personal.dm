@@ -98,7 +98,7 @@
 
 /datum/loadout_item/head/goldengoggles
 	name = "Steampunk Goggles"
-	item_path = /obj/item/clothing/glasses/welding/goldengoggles
+	item_path = /obj/item/clothing/glasses/welding/steampunk_goggles
 	ckeywhitelist = list("goldenalpharex")
 
 /datum/loadout_item/head/bio_jax
@@ -496,3 +496,9 @@
 	donator_only = TRUE
 
 //Chunko Fops were donated by SlippyJoe, who requested they are usable by everyone
+
+/datum/loadout_item/under/jumpsuit/bubbly_clown
+	name = "Bubbly Clown Dress"
+	item_path = /obj/item/clothing/under/bubbly_clown/skirt
+	restricted_roles = list(JOB_CLOWN)
+	ckeywhitelist = list("boisterousbeebz", "aether217")

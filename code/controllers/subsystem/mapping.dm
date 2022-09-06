@@ -55,6 +55,9 @@ SUBSYSTEM_DEF(mapping)
 	///associative list of the form: list("[z level num]" = max generator gravity in that z level OR the gravity level trait)
 	var/list/gravity_by_z_level = list()
 
+	/// list of traits and their associated z leves
+	var/list/z_trait_levels = list()
+
 /datum/controller/subsystem/mapping/New()
 	..()
 #ifdef FORCE_MAP
@@ -107,7 +110,6 @@ SUBSYSTEM_DEF(mapping)
 	setup_map_transitions()
 	generate_station_area_list()
 	initialize_reserved_level(transit.z_value)
-	SSticker.OnRoundstart(CALLBACK(src, .proc/spawn_maintenance_loot))
 	generate_z_level_linkages()
 	calculate_default_z_level_gravities()
 
@@ -309,8 +311,10 @@ Used by the AI doomsday and the self-destruct nuke.
 		var/datum/parsed_map/pm = P
 		if (!pm.load(1, 1, start_z + parsed_maps[P], no_changeturf = TRUE, blacklisted_turfs = SSautomapper.get_turf_blacklists(files))) // SKYRAT EDIT CHANGE - We use blacklisted turfs to carve out places for our templates.
 			errorList |= pm.original_path
-		else
-			SSautomapper.load_templates_from_cache(files) // SKYRAT EDIT ADDITION - We need to load our templates from cache after our space has been carved out.
+	// SKYRAT EDIT ADDITION BEGIN - We need to load our templates from cache after our space has been carved out.
+	if(!LAZYLEN(errorList))
+		SSautomapper.load_templates_from_cache(files)
+	// SKYRAT EDIT ADDITION END
 	if(!silent)
 		add_startup_message("Loaded [name] in [(REALTIMEOFDAY - start_time)/10]s!") //SKYRAT EDIT CHANGE
 	return parsed_maps
@@ -661,10 +665,3 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 		isolated_ruins_z = add_new_zlevel("Isolated Ruins/Reserved", list(ZTRAIT_RESERVED = TRUE, ZTRAIT_ISOLATED_RUINS = TRUE))
 		initialize_reserved_level(isolated_ruins_z.z_value)
 	return isolated_ruins_z.z_value
-
-/datum/controller/subsystem/mapping/proc/spawn_maintenance_loot()
-	for(var/obj/effect/spawner/random/maintenance/spawner as anything in GLOB.maintenance_loot_spawners)
-		CHECK_TICK
-
-		spawner.spawn_loot()
-		qdel(spawner)
