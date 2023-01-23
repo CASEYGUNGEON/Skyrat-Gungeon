@@ -20,7 +20,6 @@
 	contraband = list(
 		/obj/item/clothing/glasses/sunglasses = 2,
 		/obj/item/storage/fancy/donut_box = 2,
-		/obj/item/armament_token/sidearm_blackmarket = 2,
 	)
 	premium = list(
 		/obj/item/storage/belt/security/webbing = 4,
@@ -72,9 +71,9 @@
 					/obj/item/clothing/head/security_garrison = 10,
 					/obj/item/clothing/head/security_cap = 10,
 					/obj/item/clothing/head/beret/sec/peacekeeper = 5,
-					/obj/item/clothing/head/ushanka/sec/blue = 10,
-					/obj/item/clothing/head/sec/peacekeeper/sol = 5,
-					/obj/item/clothing/head/sec/peacekeeper/sol/traffic = 5,
+					/obj/item/clothing/head/costume/ushanka/sec/blue = 10,
+					/obj/item/clothing/head/hats/sec/peacekeeper/sol = 5,
+					/obj/item/clothing/head/hats/sec/peacekeeper/sol/traffic = 5,
 					/obj/item/clothing/gloves/color/black/security = 10,
 					)
 	premium = list( /obj/item/clothing/under/rank/security/officer/formal = 3,

@@ -234,13 +234,13 @@
 
 /datum/objective_item/steal/hdd_extraction
 	name = "the source code for Project Goon from the master R&D server mainframe"
-	targetitem = /obj/item/computer_hardware/hard_drive/cluster/hdd_theft
+	targetitem = /obj/item/computer_disk/hdd_theft
 	difficulty = 10
 	excludefromjob = list(JOB_RESEARCH_DIRECTOR, JOB_SCIENTIST, JOB_ROBOTICIST, JOB_GENETICIST)
 	exists_on_map = TRUE
 
-/obj/item/computer_hardware/hard_drive/cluster/hdd_theft/add_stealing_item_objective()
-	ADD_STEAL_ITEM(src, /obj/item/computer_hardware/hard_drive/cluster/hdd_theft)
+/obj/item/computer_disk/hdd_theft/add_stealing_item_objective()
+	ADD_STEAL_ITEM(src, /obj/item/computer_disk/hdd_theft)
 
 /datum/objective_item/steal/hdd_extraction/New()
 	special_equipment += /obj/item/paper/guides/antag/hdd_extraction
@@ -275,7 +275,7 @@
 	var/found_amount = 0
 	var/datum/gas_mixture/mix = T.return_air()
 	found_amount += mix.gases[/datum/gas/plasma] ? mix.gases[/datum/gas/plasma][MOLES] : 0
-	return found_amount>=target_amount
+	return found_amount >= target_amount
 
 
 /datum/objective_item/steal/functionalai
@@ -406,7 +406,7 @@
 
 	if(istype(S, targetitem))
 		found_amount = S.amount
-	return found_amount>=target_amount
+	return found_amount >= target_amount
 
 /datum/objective_item/stack/diamond
 	name = "10 diamonds"

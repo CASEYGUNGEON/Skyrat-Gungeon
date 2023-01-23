@@ -36,12 +36,13 @@
 	icon_state = "util_med"
 
 /obj/item/clothing/under/rank/medical/doctor/skyrat/utility/syndicate
-	armor = list(MELEE = 10, BULLET = 0, LASER = 0, ENERGY = 0, BOMB = 0, BIO = 0, FIRE = 50, ACID = 40) // Same stats as the tactical turtleneck.
+	armor_type = /datum/armor/utility_syndicate
 	has_sensor = NO_SENSORS
 
 /*
 *	SCRUBS
 */
+
 /obj/item/clothing/under/rank/medical/scrubs/skyrat/red
 	desc = "It's made of a special fiber that provides minor protection against biohazards. This one is in a deep red."
 	icon_state = "scrubsred"
@@ -93,4 +94,3 @@
 	desc = "A teal, sterile naval suit with a rank badge denoting the Officer of the Medical Corps. Doesn't protect against blaster fire."
 	name = "chief medical officer's naval jumpsuit"
 	icon_state = "impcmo"
-	inhand_icon_state = "b_suit"
