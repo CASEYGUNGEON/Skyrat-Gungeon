@@ -68,6 +68,9 @@
 	return ..()
 
 /obj/item/organ/external/Insert(mob/living/carbon/receiver, special, drop_if_replaced)
+	if(!should_external_organ_apply_to(type, receiver))
+		stack_trace("adding a [type] to a [receiver.type] when it shouldn't be!")
+
 	var/obj/item/bodypart/limb = receiver.get_bodypart(deprecise_zone(zone))
 
 	if(!limb)
@@ -100,10 +103,9 @@
 /obj/item/organ/external/Remove(mob/living/carbon/organ_owner, special, moving)
 	. = ..()
 
-	if(ownerlimb && !moving)
+	if(ownerlimb)
 		remove_from_limb()
-
-		if(use_mob_sprite_as_obj_sprite)
+		if(!moving && use_mob_sprite_as_obj_sprite) //so we're being taken out and dropped
 			update_appearance(UPDATE_OVERLAYS)
 
 	if(organ_owner)
@@ -135,6 +137,20 @@
 	ownerlimb = null
 	return ..()
 
+/proc/should_external_organ_apply_to(obj/item/organ/external/organpath, mob/living/carbon/target)
+	if(isnull(organpath) || isnull(target))
+		stack_trace("passed a null path or mob to 'should_external_organ_apply_to'")
+		return FALSE
+
+	var/datum/bodypart_overlay/mutant/bodypart_overlay = initial(organpath.bodypart_overlay)
+	var/feature_key = !isnull(bodypart_overlay) && initial(bodypart_overlay.feature_key)
+	if(isnull(feature_key))
+		return TRUE
+
+	if(target.dna.features[feature_key] != SPRITE_ACCESSORY_NONE)
+		return TRUE
+	return FALSE
+
 ///Update our features after something changed our appearance
 /obj/item/organ/external/proc/mutate_feature(features, mob/living/carbon/human/human)
 	if(!dna_block)
@@ -156,7 +172,7 @@
 		ownerlimb.update_icon_dropped()
 	//else if(use_mob_sprite_as_obj_sprite) //are we out in the world, unprotected by flesh?
 
-/obj/item/organ/external/on_life(delta_time, times_fired)
+/obj/item/organ/external/on_life(seconds_per_tick, times_fired)
 	return
 
 /obj/item/organ/external/update_overlays()
@@ -168,7 +184,7 @@
 	//Build the mob sprite and use it as our overlay
 	for(var/external_layer in bodypart_overlay.all_layers)
 		if(bodypart_overlay.layers & external_layer)
-			. += bodypart_overlay.get_overlay(external_layer, limb = null)
+			. += bodypart_overlay.get_overlay(external_layer, ownerlimb)
 
 ///The horns of a lizard!
 /obj/item/organ/external/horns
@@ -276,13 +292,13 @@
 
 /obj/item/organ/external/antennae/Insert(mob/living/carbon/receiver, special, drop_if_replaced)
 	. = ..()
-
+	if(!.)
+		return
 	RegisterSignal(receiver, COMSIG_HUMAN_BURNING, PROC_REF(try_burn_antennae))
 	RegisterSignal(receiver, COMSIG_LIVING_POST_FULLY_HEAL, PROC_REF(heal_antennae))
 
 /obj/item/organ/external/antennae/Remove(mob/living/carbon/organ_owner, special, moving)
 	. = ..()
-
 	UnregisterSignal(organ_owner, list(COMSIG_HUMAN_BURNING, COMSIG_LIVING_POST_FULLY_HEAL))
 
 ///check if our antennae can burn off ;_;
@@ -366,8 +382,11 @@
 	if(draw_layer != bitflag_to_layer(color_swapped_layer))
 		return ..()
 
-	var/list/rgb_list = rgb2num(draw_color)
-	overlay.color = rgb(color_inverse_base - rgb_list[1], color_inverse_base - rgb_list[2], color_inverse_base - rgb_list[3]) //inversa da color
+	if(draw_color) // can someone explain to me why draw_color is allowed to EVER BE AN EMPTY STRING
+		var/list/rgb_list = rgb2num(draw_color)
+		overlay.color = rgb(color_inverse_base - rgb_list[1], color_inverse_base - rgb_list[2], color_inverse_base - rgb_list[3]) //inversa da color
+	else
+		overlay.color = null
 
 /datum/bodypart_overlay/mutant/pod_hair/can_draw_on_bodypart(mob/living/carbon/human/human)
 	if((human.head?.flags_inv & HIDEHAIR) || (human.wear_mask?.flags_inv & HIDEHAIR))

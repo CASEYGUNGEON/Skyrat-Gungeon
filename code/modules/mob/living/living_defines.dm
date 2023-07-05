@@ -5,8 +5,8 @@
 
 	hud_type = /datum/hud/living
 
-	///Badminnery resize
-	var/resize = 1
+	///Tracks the current size of the mob in relation to its original size. Use update_transform(resize) to change it.
+	var/current_size = RESIZE_DEFAULT_SIZE
 	var/lastattacker = null
 	var/lastattackerckey = null
 
@@ -69,7 +69,6 @@
 	var/death_message = ""
 	///A sound sent when the mob dies, with the *deathgasp emote
 	var/death_sound
-
 
 	/// Helper vars for quick access to firestacks, these should be updated every time firestacks are adjusted
 	var/on_fire = FALSE
@@ -223,3 +222,6 @@
 	// Multiple imaginary friends!
 	/// Contains the owner and all imaginary friend mobs if they exist, otherwise null
 	var/list/imaginary_group = null
+
+	/// What our current gravity state is. Used to avoid duplicate animates and such
+	var/gravity_state = null

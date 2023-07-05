@@ -143,6 +143,7 @@ GLOBAL_LIST_EMPTY(cached_mutant_icon_files)
 
 /datum/sprite_accessory/pod_hair
 	name = "None"
+	icon = 'modular_skyrat/master_files/icons/mob/species/podperson_hair.dmi'
 	icon_state = "None"
 	key = "pod_hair"
 	recommended_species = list(SPECIES_PODPERSON, SPECIES_PODPERSON_WEAK)
@@ -161,7 +162,7 @@ GLOBAL_LIST_EMPTY(cached_mutant_icon_files)
 	organ_type = /obj/item/organ/external/spines
 
 /datum/sprite_accessory/spines/is_hidden(mob/living/carbon/human/wearer)
-	var/obj/item/organ/external/tail/tail = wearer.getorganslot(ORGAN_SLOT_EXTERNAL_TAIL)
+	var/obj/item/organ/external/tail/tail = wearer.get_organ_slot(ORGAN_SLOT_EXTERNAL_TAIL)
 	if(!wearer.w_uniform && !wearer.wear_suit)
 		return FALSE
 	//	Can hide if wearing uniform
@@ -180,7 +181,7 @@ GLOBAL_LIST_EMPTY(cached_mutant_icon_files)
 		return TRUE
 
 /datum/sprite_accessory/spines/get_special_render_state(mob/living/carbon/human/H)
-	var/obj/item/organ/external/tail/tail = H.getorganslot(ORGAN_SLOT_EXTERNAL_TAIL)
+	var/obj/item/organ/external/tail/tail = H.get_organ_slot(ORGAN_SLOT_EXTERNAL_TAIL)
 	if(tail && tail.wag_flags & WAG_WAGGING)
 		return "[icon_state]_wagging"
 	return icon_state

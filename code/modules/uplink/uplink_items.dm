@@ -17,6 +17,7 @@
 		uplink_item.name += " ([round(((initial(uplink_item.cost)-uplink_item.cost)/initial(uplink_item.cost))*100)]% off!)"
 		uplink_item.desc += " Normally costs [initial(uplink_item.cost)] TC. All sales final. [pick(disclaimer)]"
 		uplink_item.item = taken_item.item
+		uplink_item.discounted = TRUE
 
 		sales += uplink_item
 	return sales
@@ -35,8 +36,6 @@
 	var/desc = "item description"
 	/// Path to the item to spawn.
 	var/item = null
-	/// Alternative path for refunds, in case the item purchased isn't what is actually refunded (ie: holoparasites).
-	var/refund_path = null
 	/// Cost of the item.
 	var/cost = 0
 	/// Amount of TC to refund, in case there's a TC penalty for refunds.
@@ -47,6 +46,8 @@
 	var/surplus = 100
 	/// Whether this can be discounted or not
 	var/cant_discount = FALSE
+	/// If discounted, is true. Used to send a signal to update reimbursement.
+	var/discounted = FALSE
 	/// If this value is changed on two items they will share stock, defaults to not sharing stock with any other item
 	var/stock_key = UPLINK_SHARED_STOCK_UNIQUE
 	/// How many items of this stock can be purchased.
@@ -66,8 +67,13 @@
 	var/restricted = FALSE
 	/// Can this item be deconstructed to unlock certain techweb research nodes?
 	var/illegal_tech = TRUE
-	// String to be shown instead of the price, e.g for the Random item.
+	/// String to be shown instead of the price, e.g for the Random item.
 	var/cost_override_string = ""
+	/// Whether this item locks all other items from being purchased. Used by syndicate balloon and a few other purchases.
+	/// Can't be purchased if you've already bought other things
+	/// Uses the purchase log, so items purchased that are not visible in the purchase log will not count towards this.
+	/// However, they won't be purchasable afterwards.
+	var/lock_other_purchases = FALSE
 
 /datum/uplink_item/New()
 	. = ..()
@@ -108,6 +114,8 @@
 	log_uplink("[key_name(user)] purchased [src] for [cost] telecrystals from [source]'s uplink")
 	if(purchase_log_vis && uplink_handler.purchase_log)
 		uplink_handler.purchase_log.LogPurchase(A, src, cost)
+	if(lock_other_purchases)
+		uplink_handler.shop_locked = TRUE
 
 /// Spawns an item in the world
 /datum/uplink_item/proc/spawn_item(spawn_path, mob/user, datum/uplink_handler/uplink_handler, atom/movable/source)
@@ -118,6 +126,8 @@
 		A = new spawn_path(get_turf(user))
 	else
 		A = spawn_path
+	if(refundable)
+		A.AddElement(/datum/element/uplink_reimburse, (refund_amount ? refund_amount : cost))
 	if(ishuman(user) && isitem(A))
 		var/mob/living/carbon/human/H = user
 		if(H.put_in_hands(A))

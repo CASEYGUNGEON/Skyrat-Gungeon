@@ -1,5 +1,3 @@
-// File organised based on progression
-
 //All bundles and telecrystals
 /datum/uplink_category/dangerous
 	name = "Conspicuous Weapons"
@@ -7,8 +5,6 @@
 
 /datum/uplink_item/dangerous
 	category = /datum/uplink_category/dangerous
-
-// No progression cost
 
 /datum/uplink_item/dangerous/foampistol
 	name = "Toy Pistol with Riot Darts"
@@ -18,8 +14,6 @@
 	cost = 2
 	surplus = 10
 	purchasable_from = ~UPLINK_NUKE_OPS
-
-// Low progression cost
 
 /datum/uplink_item/dangerous/pistol
 	name = "Makarov Pistol"
@@ -66,9 +60,6 @@
 	item = /obj/item/clothing/gloves/rapid
 	cost = 8
 
-
-// Medium progression cost
-
 /datum/uplink_item/dangerous/doublesword
 	name = "Double-Bladed Energy Sword"
 	desc = "The double-bladed energy sword does slightly more damage than a standard energy sword and will deflect \
@@ -98,6 +89,7 @@
 	surplus = 0
 	purchasable_from = ~(UPLINK_NUKE_OPS | UPLINK_CLOWN_OPS)
 	restricted = TRUE
+	refundable = TRUE
 
 /datum/uplink_item/dangerous/revolver
 	name = "Syndicate Revolver"

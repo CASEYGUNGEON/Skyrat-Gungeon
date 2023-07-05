@@ -125,7 +125,6 @@
 
 /datum/preference/tri_color/genital/is_accessible(datum/preferences/preferences)
 	var/passed_initial_check = ..(preferences)
-	var/allowed = preferences.read_preference(/datum/preference/toggle/allow_mismatched_parts)
 	var/erp_allowed = preferences.read_preference(/datum/preference/toggle/master_erp_preferences) && preferences.read_preference(/datum/preference/toggle/allow_genitals)
 	var/can_color = TRUE
 	/// Checks that the use skin color pref is both enabled and actually accessible. If so, then this is useless.
@@ -133,7 +132,7 @@
 		var/datum/preference/toggle/genital_skin_color/skincolor = GLOB.preference_entries[skin_color_type]
 		if(skincolor.is_accessible(preferences))
 			can_color = FALSE
-	return erp_allowed && can_color && (passed_initial_check || allowed)
+	return erp_allowed && can_color && passed_initial_check
 
 /datum/preference/tri_bool/genital
 	category = PREFERENCE_CATEGORY_SECONDARY_FEATURES
@@ -144,7 +143,6 @@
 
 /datum/preference/tri_bool/genital/is_accessible(datum/preferences/preferences)
 	var/passed_initial_check = ..(preferences)
-	var/allowed = preferences.read_preference(/datum/preference/toggle/allow_mismatched_parts)
 	var/erp_allowed = preferences.read_preference(/datum/preference/toggle/master_erp_preferences) && preferences.read_preference(/datum/preference/toggle/allow_genitals)
 	var/can_color = TRUE
 	/// Checks that the use skin color pref is both enabled and actually accessible. If so, then this is useless.
@@ -152,7 +150,7 @@
 		var/datum/preference/toggle/genital_skin_color/skincolor = GLOB.preference_entries[skin_color_type]
 		if(skincolor.is_accessible(preferences))
 			can_color = FALSE
-	return erp_allowed && can_color && (passed_initial_check || allowed)
+	return erp_allowed && can_color && passed_initial_check
 
 // PENIS
 
@@ -199,14 +197,14 @@
 	target.dna.features["penis_size"] = value
 
 /datum/preference/numeric/penis_length/create_default_value() // if you change from this to PENIS_MAX_LENGTH the game should laugh at you
-	return round((PENIS_MIN_LENGTH + PENIS_MAX_LENGTH) / 2)
+	return round(max(PENIS_MIN_LENGTH, PENIS_DEFAULT_LENGTH))
 
 /datum/preference/numeric/penis_girth
 	category = PREFERENCE_CATEGORY_SECONDARY_FEATURES
 	savefile_identifier = PREFERENCE_CHARACTER
 	savefile_key = "penis_girth"
 	relevant_mutant_bodypart = ORGAN_SLOT_PENIS
-	minimum = PENIS_MIN_LENGTH
+	minimum = PENIS_MIN_GIRTH
 	maximum = PENIS_MAX_GIRTH
 
 /datum/preference/numeric/penis_girth/is_accessible(datum/preferences/preferences)
@@ -220,7 +218,7 @@
 	target.dna.features["penis_girth"] = value
 
 /datum/preference/numeric/penis_girth/create_default_value()
-	return round((PENIS_MIN_LENGTH + PENIS_MAX_GIRTH) / 2)
+	return round(max(PENIS_MIN_GIRTH, PENIS_DEFAULT_GIRTH))
 
 /datum/preference/tri_color/genital/penis
 	savefile_key = "penis_color"

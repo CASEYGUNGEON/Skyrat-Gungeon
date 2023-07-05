@@ -949,7 +949,7 @@ world
 			letter = lowertext(letter)
 
 	var/image/text_image = new(loc = A)
-	text_image.maptext = MAPTEXT("<font size = 4>[letter]</font>")
+	text_image.maptext = MAPTEXT_TINY_UNICODE("[letter]")
 	text_image.pixel_x = 7
 	text_image.pixel_y = 5
 	qdel(atom_icon)
@@ -973,7 +973,7 @@ GLOBAL_LIST_EMPTY(friendly_animal_types)
 
 	var/image/final_image = image(icon, icon_state=icon_state, loc = A)
 
-	if(ispath(SA, /mob/living/simple_animal/butterfly))
+	if(ispath(SA, /mob/living/basic/butterfly))
 		final_image.color = rgb(rand(0,255), rand(0,255), rand(0,255))
 
 	// For debugging
@@ -1013,7 +1013,7 @@ GLOBAL_LIST_EMPTY(friendly_animal_types)
 	var/static/list/humanoid_icon_cache = list()
 	if(icon_id && humanoid_icon_cache[icon_id])
 		return humanoid_icon_cache[icon_id]
-	var/mob/living/carbon/human/dummy/body = generate_dummy_lookalike() //SKYRAT EDIT: original = generate_or_wait_for_human_dummy(dummy_key)
+	var/mob/living/carbon/human/dummy/body = generate_or_wait_for_human_dummy(dummy_key)
 	if(prefs)
 		prefs.apply_prefs_to(body, TRUE)
 

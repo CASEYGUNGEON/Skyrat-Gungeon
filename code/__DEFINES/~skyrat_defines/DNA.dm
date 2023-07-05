@@ -69,9 +69,12 @@
 #define BODY_SIZE_MIN 0.8
 
 //In inches
+#define PENIS_MIN_GIRTH PENIS_MIN_LENGTH
 #define PENIS_MAX_GIRTH 15
+#define PENIS_DEFAULT_GIRTH 5 // a lil big but not by much
 #define PENIS_MIN_LENGTH 1
 #define PENIS_MAX_LENGTH 20
+#define PENIS_DEFAULT_LENGTH 6 //still a lil long but not insane
 
 #define TESTICLES_MIN_SIZE 0
 #define TESTICLES_MAX_SIZE 3
@@ -132,6 +135,7 @@
 #define SPECIES_GHOUL "ghoul"
 #define SPECIES_TESHARI "teshari"
 #define SPECIES_HEMOPHAGE "hemophage"
+#define SPECIES_FELINE_PRIMITIVE "primitive_felinid"
 
 #define SPECIES_MUTANT "mutant"
 #define SPECIES_MUTANT_INFECTIOUS "infectious_mutant"

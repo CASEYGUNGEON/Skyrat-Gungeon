@@ -235,6 +235,7 @@ GLOBAL_LIST_EMPTY(total_uf_len_by_block)
 			var/species_holder = initial(mrace.species_language_holder)
 			language_holder = new species_holder(src)
 		update_atom_languages()
+		log_mob_tag("TAG: [tag] SPECIES: [key_name(src)] \[[mrace]\]")
 
 
 /mob/living/carbon/proc/apply_customizable_dna_features_to_species()
@@ -263,7 +264,7 @@ GLOBAL_LIST_EMPTY(total_uf_len_by_block)
 	eye_color_right = sanitize_hexcolor(get_uni_identity_block(structure, DNA_EYE_COLOR_RIGHT_BLOCK))
 
 	if(eyeorgancolor_update)
-		var/obj/item/organ/internal/eyes/eye_organ = getorganslot(ORGAN_SLOT_EYES)
+		var/obj/item/organ/internal/eyes/eye_organ = get_organ_slot(ORGAN_SLOT_EYES)
 		eye_organ.eye_color_left = eye_color_left
 		eye_organ.eye_color_right = eye_color_right
 		eye_organ.old_eye_color_left = eye_color_left

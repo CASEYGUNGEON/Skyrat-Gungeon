@@ -79,9 +79,9 @@
 		button.maptext = ""
 	else
 		if (cooldown_rounding > 0)
-			button.maptext = MAPTEXT("<b>[round(time_left/10, cooldown_rounding)]</b>")
+			button.maptext = MAPTEXT("[round(time_left/10, cooldown_rounding)]")
 		else
-			button.maptext = MAPTEXT("<b>[round(time_left/10)]</b>")
+			button.maptext = MAPTEXT("[round(time_left/10)]")
 
 	if(!IsAvailable() || !is_action_active(button))
 		return
@@ -335,3 +335,5 @@
 	SEND_SIGNAL(src, COMSIG_ACTION_SET_STATPANEL, stat_panel_data)
 
 	return stat_panel_data
+
+#undef COOLDOWN_NO_DISPLAY_TIME

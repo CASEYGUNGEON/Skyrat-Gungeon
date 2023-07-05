@@ -78,6 +78,10 @@
 	item_path = /obj/item/survivalcapsule
 	cost_per_order = 400
 
+/datum/orderable_item/mining/capsule/bathroom
+	item_path = /obj/item/survivalcapsule/bathroom
+	cost_per_order = 375
+
 /datum/orderable_item/mining/capsule_luxury
 	item_path = /obj/item/survivalcapsule/luxury
 	cost_per_order = 3000
@@ -97,3 +101,7 @@
 /datum/orderable_item/mining/hiking_boots
 	item_path = /obj/item/clothing/shoes/winterboots/ice_boots
 	cost_per_order = 2500
+
+/datum/orderable_item/mining/style_meter
+	item_path = /obj/item/style_meter
+	cost_per_order = 1500

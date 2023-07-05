@@ -9,6 +9,7 @@
 #define NIF_MINIMUM_POWER_LEVEL 0
 
 #define NIF_SETUP_BLINDNESS "nif_setup"
+#define MAX_NIF_REWARDS_POINTS 2000
 
 // This is the original NIF that other NIFs are based on.
 /obj/item/organ/internal/cyberimp/brain/nif
@@ -81,6 +82,8 @@
 	var/theft_protection = TRUE
 	///Is the NIF able to take damage?
 	var/durability_loss_vulnerable = TRUE
+	/// How many rewards points does the NIF currently have?
+	var/rewards_points = 0
 
 	//Software Variables
 	///How many programs can the NIF store at once?
@@ -135,7 +138,6 @@
 	linked_mob = insertee
 	stored_ckey = linked_mob.ckey
 
-	loc = insertee // This needs to be done, otherwise TGUI will not pull up.
 	START_PROCESSING(SSobj, src)
 
 	if(!is_calibrated)
@@ -162,6 +164,8 @@
 	if(linked_mob)
 		UnregisterSignal(linked_mob, COMSIG_LIVING_DEATH, PROC_REF(damage_on_death))
 
+	QDEL_LIST(loaded_nifsofts)
+
 ///Installs preinstalled NIFSofts
 /obj/item/organ/internal/cyberimp/brain/nif/proc/install_preinstalled_nifsofts()
 	if(!preinstalled_nifsofts)
@@ -172,7 +176,7 @@
 
 	return TRUE
 
-/obj/item/organ/internal/cyberimp/brain/nif/process(delta_time)
+/obj/item/organ/internal/cyberimp/brain/nif/process(seconds_per_tick)
 	. = ..()
 
 	if(!linked_mob || broken || IS_IN_STASIS(linked_mob))
@@ -322,8 +326,11 @@
 			return FALSE
 
 	loaded_nifsofts += loaded_nifsoft
-	loaded_nifsoft.parent_nif = src
+	loaded_nifsoft.parent_nif = WEAKREF(src)
 	loaded_nifsoft.linked_mob = linked_mob
+	rewards_points += (loaded_nifsoft.rewards_points_rate * loaded_nifsoft.purchase_price)
+
+	rewards_points = min(rewards_points, MAX_NIF_REWARDS_POINTS)
 
 	send_message("[loaded_nifsoft] has been added.")
 	update_static_data_for_all_viewers()
@@ -399,7 +406,7 @@
 		broken = TRUE
 		addtimer(CALLBACK(src, PROC_REF(fix_nif)), 30 SECONDS)
 
-	addtimer(CALLBACK(src, .proc/make_vulnerable), 3 MINUTES)
+	addtimer(CALLBACK(src, PROC_REF(make_vulnerable)), 3 MINUTES)
 
 	switch(severity)
 		if(1)
@@ -424,6 +431,14 @@
 
 	addtimer(CALLBACK(src, PROC_REF(make_vulnerable)), 20 MINUTES) //Players should have a decent grace period on this.
 
+/// Removes rewards points from the parent NIF. Returns FALSE if there are not enough points to remove, returns TRUE if the points have been succesfully removed.
+/obj/item/organ/internal/cyberimp/brain/nif/proc/remove_rewards_points(points_to_remove)
+	if(points_to_remove > rewards_points)
+		return FALSE
+
+	rewards_points -= points_to_remove
+	return TRUE
+
 /datum/component/nif_examine
 	///What text is shown when examining someone with NIF Examine text?
 	var/nif_examine_text = "There's a certain spark to their eyes."
@@ -433,12 +448,11 @@
 	if(!ishuman(parent))
 		return COMPONENT_INCOMPATIBLE
 
-	RegisterSignal(parent, COMSIG_PARENT_EXAMINE, .proc/add_examine)
+	RegisterSignal(parent, COMSIG_ATOM_EXAMINE, PROC_REF(add_examine))
 
 /datum/component/nif_examine/Destroy(force, silent)
 	UnregisterSignal(parent, COMSIG_MOB_EXAMINATE)
 	return ..()
-
 
 ///Adds and examine based on the nif_examine_text of the nif_user
 /datum/component/nif_examine/proc/add_examine(mob/nif_user, mob/looker, list/examine_texts)
@@ -448,7 +462,7 @@
 
 ///Checks to see if a human with a NIF has the nifsoft_to_find type of NIFSoft installed?
 /mob/living/carbon/human/proc/find_nifsoft(datum/nifsoft/nifsoft_to_find)
-	var/obj/item/organ/internal/cyberimp/brain/nif/installed_nif = getorgan(/obj/item/organ/internal/cyberimp/brain/nif)
+	var/obj/item/organ/internal/cyberimp/brain/nif/installed_nif = get_organ_by_type(/obj/item/organ/internal/cyberimp/brain/nif)
 	var/list/nifsoft_list = installed_nif?.loaded_nifsofts
 
 	if(!nifsoft_list)
@@ -488,6 +502,7 @@
 	new /obj/item/disk/nifsoft_uploader/summoner(src)
 	new /obj/item/disk/nifsoft_uploader/money_sense(src)
 	new /obj/item/disk/nifsoft_uploader/dorms(src)
+	new /obj/item/disk/nifsoft_uploader/soulcatcher(src)
 
 #undef NIF_CALIBRATION_STAGE_1
 #undef NIF_CALIBRATION_STAGE_1_END
@@ -498,3 +513,4 @@
 #undef NIF_MINIMUM_DURABILITY
 #undef NIF_MINIMUM_POWER_LEVEL
 #undef NIF_SETUP_BLINDNESS
+#undef MAX_NIF_REWARDS_POINTS

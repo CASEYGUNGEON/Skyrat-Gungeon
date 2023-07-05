@@ -229,7 +229,7 @@
 		STOP_PROCESSING(SSobj, src)
 
 // Mask choke processor
-/obj/item/clothing/mask/gas/bdsm_mask/process(delta_time)
+/obj/item/clothing/mask/gas/bdsm_mask/process(seconds_per_tick)
 	var/mob/living/affected_mob = loc
 	var/mob/living/carbon/affected_carbon = affected_mob
 
@@ -260,9 +260,9 @@
 				breath_status = TRUE
 				temp_check = FALSE
 		else
-			tt -= delta_time
+			tt -= seconds_per_tick
 	else
-		time_to_choke_left -= delta_time
+		time_to_choke_left -= seconds_per_tick
 
 /*
 *	FILTERS
@@ -277,9 +277,9 @@
 	unique_reskin = list("pink" = "filter_pink",
 						"teal" = "filter_teal")
 	w_class = WEIGHT_CLASS_SMALL
-	custom_materials = list(/datum/material/glass = 1500, /datum/material/plastic = 2000)
+	custom_materials = list(/datum/material/glass = SHEET_MATERIAL_AMOUNT, /datum/material/plastic = SHEET_MATERIAL_AMOUNT)
 	volume = 50
-	possible_transfer_amounts = list(1, 2, 3, 4, 5)
+	possible_transfer_amounts = list(1, 2, 3, 4, 5, 10, 25, 50)
 	list_reagents = list(/datum/reagent/drug/aphrodisiac/crocin = 50)
 
 // Standard initialize code for filter

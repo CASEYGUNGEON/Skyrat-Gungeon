@@ -13,8 +13,8 @@
 	mob_biotypes = MOB_ORGANIC|MOB_HUMANOID
 	can_be_shoved_into = TRUE
 
-	maxHealth = MAX_HUMAN_LIFE //SKYRAT EDIT ADDITION
-	health = MAX_HUMAN_LIFE //SKYRAT EDIT ADDITION
+	maxHealth = 135 //SKYRAT EDIT ADDITION
+	health = 135 //SKYRAT EDIT ADDITION
 
 	//Hair colour and style
 	var/hair_color = "#000000"
@@ -68,7 +68,7 @@
 
 	var/datum/physiology/physiology
 
-	var/list/datum/bioware = list()
+	var/list/datum/bioware/biowares
 
 	/// What types of mobs are allowed to ride/buckle to this mob
 	var/static/list/can_ride_typecache = typecacheof(list(/mob/living/carbon/human, /mob/living/simple_animal/slime, /mob/living/simple_animal/parrot))

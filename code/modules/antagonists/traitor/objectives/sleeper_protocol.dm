@@ -42,7 +42,7 @@
 			disk = new(user.drop_location())
 			user.put_in_hands(disk)
 			AddComponent(/datum/component/traitor_objective_register, disk, \
-				fail_signals = list(COMSIG_PARENT_QDELETING))
+				fail_signals = list(COMSIG_QDELETING))
 
 /datum/traitor_objective/sleeper_protocol/proc/on_surgery_success(datum/source, datum/surgery_step/step, mob/living/target, target_zone, obj/item/tool, datum/surgery/surgery, default_display_results)
 	SIGNAL_HANDLER
@@ -88,7 +88,7 @@
 	. = ..()
 	if(!.)
 		return FALSE
-	var/obj/item/organ/internal/brain/target_brain = target.getorganslot(ORGAN_SLOT_BRAIN)
+	var/obj/item/organ/internal/brain/target_brain = target.get_organ_slot(ORGAN_SLOT_BRAIN)
 	if(!target_brain)
 		return FALSE
 	return TRUE

@@ -66,7 +66,7 @@
 
 /obj/machinery/scanner_gate/Initialize(mapload)
 	. = ..()
-	wires = new /datum/wires/scanner_gate(src)
+	set_wires(new /datum/wires/scanner_gate(src))
 	set_scanline("passive")
 	var/static/list/loc_connections = list(
 		COMSIG_ATOM_ENTERED = PROC_REF(on_entered),
@@ -75,7 +75,7 @@
 
 /obj/machinery/scanner_gate/Destroy()
 	qdel(wires)
-	wires = null
+	set_wires(null)
 	. = ..()
 
 /obj/machinery/scanner_gate/examine(mob/user)
@@ -203,7 +203,7 @@
 				if(is_species(H, scan_species))
 					beep = TRUE
 				if(detect_species == SCANGATE_ZOMBIE) //Can detect dormant zombies
-					if(H.getorganslot(ORGAN_SLOT_ZOMBIE))
+					if(H.get_organ_slot(ORGAN_SLOT_ZOMBIE))
 						beep = TRUE
 		if(SCANGATE_GUNS)
 			for(var/I in M.get_contents())
