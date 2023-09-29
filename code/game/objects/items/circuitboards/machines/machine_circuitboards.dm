@@ -56,6 +56,13 @@
 		/datum/stock_part/capacitor = 1,
 		/obj/item/electronics/airlock = 1)
 
+/obj/item/circuitboard/machine/mass_driver
+	name = "Mass Driver"
+	greyscale_colors = CIRCUIT_COLOR_ENGINEERING
+	build_path = /obj/machinery/mass_driver
+	req_components = list(
+		/datum/stock_part/servo = 1,)
+
 /obj/item/circuitboard/machine/autolathe
 	name = "Autolathe"
 	greyscale_colors = CIRCUIT_COLOR_ENGINEERING
@@ -815,7 +822,7 @@
 /obj/item/circuitboard/machine/cryo_tube
 	name = "Cryotube"
 	greyscale_colors = CIRCUIT_COLOR_MEDICAL
-	build_path = /obj/machinery/atmospherics/components/unary/cryo_cell
+	build_path = /obj/machinery/cryo_cell
 	req_components = list(
 		/datum/stock_part/matter_bin = 1,
 		/obj/item/stack/cable_coil = 1,
@@ -1025,7 +1032,12 @@
 	build_path = /obj/machinery/rnd/server
 	req_components = list(
 		/obj/item/stack/cable_coil = 2,
-		/datum/stock_part/scanning_module = 1)
+		/datum/stock_part/scanning_module = 1,
+	)
+
+/obj/item/circuitboard/machine/rdserver/oldstation
+	name = "Ancient R&D Server"
+	build_path = /obj/machinery/rnd/server/oldstation
 
 /obj/item/circuitboard/machine/techfab/department/science
 	name = "\improper Departmental Techfab - Science"
