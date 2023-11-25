@@ -13,6 +13,7 @@
 
 	data["ghost_joinable"] = ghost_joinable
 	data["require_approval"] = require_approval
+	data["theme"] = ui_theme
 	data["communicate_as_parent"] = communicate_as_parent
 	data["current_soul_count"] = length(get_current_souls())
 	data["max_souls"] = max_souls
@@ -125,7 +126,7 @@
 			return TRUE
 
 		if("modify_name")
-			var/new_name = tgui_input_text(usr,"Choose a new name to send messages as", name, target_room.room_description, multiline = TRUE)
+			var/new_name = tgui_input_text(usr,"Choose a new name to send messages as", name, target_room.outside_voice, multiline = TRUE)
 			if(!new_name)
 				return FALSE
 
